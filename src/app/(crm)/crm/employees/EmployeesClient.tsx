@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import {
   Users,
   Plus,
@@ -16,8 +17,21 @@ import {
   Edit2,
   Trash2,
   KeyRound,
+  RefreshCw,
+  AlertCircle,
+  Loader2,
+  ExternalLink,
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
+
+interface DepartmentOption {
+  _id: string;
+  name: string;
+  code: string;
+  description?: string;
+  isActive: boolean;
+  staffCount?: number;
+}
 
 interface EmployeeItem {
   _id: string;
@@ -26,7 +40,8 @@ interface EmployeeItem {
   phone: string;
   status: "active" | "inactive" | "suspended";
   role?: { name: string; slug: string };
-  department?: { name: string; code: string };
+  department?: { _id?: string; name: string; code: string; isActive?: boolean } | null;
+  departmentId?: string;
   employeeId: string;
   designation: string;
   employmentType: string;
@@ -36,13 +51,18 @@ interface EmployeeItem {
 
 export default function EmployeesClient() {
   const [employees, setEmployees] = useState<EmployeeItem[]>([]);
-  const [departments, setDepartments] = useState<any[]>([]);
+  const [departments, setDepartments] = useState<DepartmentOption[]>([]);
+  const [departmentsLoading, setDepartmentsLoading] = useState(false);
+  const [departmentsError, setDepartmentsError] = useState<string | null>(null);
+
   const [summary, setSummary] = useState({ totalStaff: 0, activeStaff: 0 });
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [deptFilter, setDeptFilter] = useState("all");
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingEmp, setEditingEmp] = useState<EmployeeItem | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -56,6 +76,27 @@ export default function EmployeesClient() {
     status: "active",
   });
 
+  // Dedicated Department Fetcher from MongoDB
+  const fetchDepartments = useCallback(async () => {
+    try {
+      setDepartmentsLoading(true);
+      setDepartmentsError(null);
+      const res = await fetch("/api/crm/departments");
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data)) {
+        setDepartments(json.data);
+      } else {
+        setDepartmentsError(json.error || "Failed to load departments from database");
+      }
+    } catch (err: any) {
+      console.error("Error fetching departments:", err);
+      setDepartmentsError(err.message || "Network error loading departments");
+    } finally {
+      setDepartmentsLoading(false);
+    }
+  }, []);
+
+  // Fetch Employees
   const fetchEmployees = async () => {
     try {
       setLoading(true);
@@ -67,7 +108,6 @@ export default function EmployeesClient() {
       const data = await res.json();
       if (data.success) {
         setEmployees(data.data);
-        if (data.departments) setDepartments(data.departments);
         if (data.summary) setSummary(data.summary);
       }
     } catch (err) {
@@ -78,12 +118,18 @@ export default function EmployeesClient() {
   };
 
   useEffect(() => {
+    fetchDepartments();
+    fetchEmployees();
+  }, [fetchDepartments]);
+
+  useEffect(() => {
     fetchEmployees();
   }, [search, statusFilter]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setSubmitting(true);
       if (editingEmp) {
         const res = await fetch(`/api/crm/employees/${editingEmp._id}`, {
           method: "PUT",
@@ -95,7 +141,8 @@ export default function EmployeesClient() {
           setShowAddModal(false);
           setEditingEmp(null);
           resetForm();
-          fetchEmployees();
+          await fetchEmployees();
+          await fetchDepartments();
         } else {
           alert(data.error || "Failed to update employee");
         }
@@ -109,7 +156,8 @@ export default function EmployeesClient() {
         if (data.success) {
           setShowAddModal(false);
           resetForm();
-          fetchEmployees();
+          await fetchEmployees();
+          await fetchDepartments();
         } else {
           alert(data.error || "Failed to create employee");
         }
@@ -117,6 +165,8 @@ export default function EmployeesClient() {
     } catch (err) {
       console.error(err);
       alert("Error saving employee");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -125,7 +175,10 @@ export default function EmployeesClient() {
     try {
       const res = await fetch(`/api/crm/employees/${id}`, { method: "DELETE" });
       const data = await res.json();
-      if (data.success) fetchEmployees();
+      if (data.success) {
+        fetchEmployees();
+        fetchDepartments();
+      }
     } catch (err) {
       console.error(err);
     }
@@ -145,21 +198,39 @@ export default function EmployeesClient() {
     });
   };
 
+  const openCreateModal = () => {
+    resetForm();
+    setEditingEmp(null);
+    setShowAddModal(true);
+    // Refresh departments dynamically whenever user opens the creation form
+    fetchDepartments();
+  };
+
   const openEdit = (emp: EmployeeItem) => {
     setEditingEmp(emp);
+    const assignedDeptId = emp.departmentId || emp.department?._id || "";
     setFormData({
       name: emp.name,
       email: emp.email,
       phone: emp.phone,
       password: "",
       designation: emp.designation,
-      departmentId: (emp.department as any)?._id || "",
+      departmentId: assignedDeptId,
       basicSalary: emp.salary?.basic || 35000,
       employmentType: emp.employmentType || "full_time",
       status: emp.status,
     });
     setShowAddModal(true);
+    // Refresh departments dynamically whenever user opens the edit form
+    fetchDepartments();
   };
+
+  // Filtered employees list (including client-side department filter)
+  const filteredEmployees = employees.filter((emp) => {
+    if (deptFilter === "all") return true;
+    const empDeptId = emp.departmentId || emp.department?._id;
+    return empDeptId === deptFilter;
+  });
 
   return (
     <div className="space-y-6 animate-fadeIn pb-12">
@@ -173,16 +244,12 @@ export default function EmployeesClient() {
             <h1 className="text-2xl font-bold text-white tracking-tight">Staff & Employee Directory</h1>
           </div>
           <p className="text-sm text-slate-400">
-            Manage agency personnel, designations, salary records, and department attachments.
+            Manage agency personnel, designations, salary records, and department attachments with live Atlas sync.
           </p>
         </div>
 
         <button
-          onClick={() => {
-            resetForm();
-            setEditingEmp(null);
-            setShowAddModal(true);
-          }}
+          onClick={openCreateModal}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-sky-500/20 transition self-start md:self-auto"
         >
           <Plus className="h-4 w-4" />
@@ -201,8 +268,16 @@ export default function EmployeesClient() {
           <p className="text-2xl font-bold text-emerald-400 mt-1">{summary.activeStaff}</p>
         </div>
         <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
-          <p className="text-xs text-slate-400">Departments Active</p>
-          <p className="text-2xl font-bold text-indigo-400 mt-1">{departments.length}</p>
+          <p className="text-xs text-slate-400">Departments Active in Atlas</p>
+          <div className="flex items-center justify-between mt-1">
+            <p className="text-2xl font-bold text-indigo-400">{departments.filter((d) => d.isActive).length}</p>
+            <Link
+              href="/crm/departments"
+              className="text-[11px] text-sky-400 hover:text-sky-300 flex items-center gap-1 font-medium"
+            >
+              Manage <ExternalLink className="h-3 w-3" />
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -219,15 +294,43 @@ export default function EmployeesClient() {
           />
         </div>
 
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-sky-500"
-        >
-          <option value="all">All Statuses</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-        </select>
+        <div className="flex items-center gap-3">
+          {/* Department Filter */}
+          <select
+            value={deptFilter}
+            onChange={(e) => setDeptFilter(e.target.value)}
+            className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-sky-500"
+          >
+            <option value="all">All Departments</option>
+            {departments.map((d) => (
+              <option key={d._id} value={d._id}>
+                {d.name} ({d.code})
+              </option>
+            ))}
+          </select>
+
+          {/* Status Filter */}
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-sky-500"
+          >
+            <option value="all">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+
+          <button
+            onClick={() => {
+              fetchEmployees();
+              fetchDepartments();
+            }}
+            className="p-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition"
+            title="Refresh Staff & Departments"
+          >
+            <RefreshCw className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       {/* Staff Table */}
@@ -236,10 +339,10 @@ export default function EmployeesClient() {
           <div className="h-8 w-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
           <span className="text-xs">Loading Personnel from MongoDB Atlas...</span>
         </div>
-      ) : employees.length === 0 ? (
+      ) : filteredEmployees.length === 0 ? (
         <div className="p-12 text-center bg-slate-900 border border-slate-800 rounded-3xl space-y-3">
           <Users className="h-10 w-10 text-slate-600 mx-auto" />
-          <p className="text-sm font-semibold text-slate-300">No employees found</p>
+          <p className="text-sm font-semibold text-slate-300">No employees found matching criteria</p>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
             Add team members to grant login credentials and operational roles.
           </p>
@@ -260,7 +363,7 @@ export default function EmployeesClient() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
-              {employees.map((emp) => (
+              {filteredEmployees.map((emp) => (
                 <tr key={emp._id} className="hover:bg-slate-800/40 transition">
                   <td className="p-3.5">
                     <p className="font-bold text-white">{emp.name}</p>
@@ -269,7 +372,14 @@ export default function EmployeesClient() {
                   <td className="p-3.5 font-mono text-sky-400">{emp.employeeId}</td>
                   <td className="p-3.5 text-slate-200">{emp.designation}</td>
                   <td className="p-3.5 text-slate-300">
-                    {emp.department ? (emp.department as any).name : "Global HQ"}
+                    {emp.department ? (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-slate-950 border border-slate-800 text-sky-300 font-medium">
+                        <Building className="h-3 w-3 text-sky-400" />
+                        {emp.department.name} ({emp.department.code})
+                      </span>
+                    ) : (
+                      <span className="text-slate-500 italic">Unassigned</span>
+                    )}
                   </td>
                   <td className="p-3.5">
                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 font-medium">
@@ -313,14 +423,19 @@ export default function EmployeesClient() {
         </div>
       )}
 
-      {/* Add / Edit Modal */}
+      {/* Add / Edit Employee Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
           <div className="w-full max-w-xl rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
             <div className="p-6 border-b border-slate-800 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white">
-                {editingEmp ? "Edit Staff Details" : "Register Team Member"}
-              </h2>
+              <div>
+                <h2 className="text-lg font-bold text-white">
+                  {editingEmp ? "Edit Staff Details" : "Register Team Member"}
+                </h2>
+                <p className="text-xs text-slate-400">
+                  {editingEmp ? `Editing profile of ${editingEmp.name}` : "Create credentials and assign to department"}
+                </p>
+              </div>
               <button
                 onClick={() => {
                   setShowAddModal(false);
@@ -341,7 +456,7 @@ export default function EmployeesClient() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
                     placeholder="e.g. Priya Sharma"
                   />
                 </div>
@@ -353,7 +468,7 @@ export default function EmployeesClient() {
                     disabled={Boolean(editingEmp)}
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white disabled:opacity-50"
+                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white disabled:opacity-50 focus:outline-none focus:border-sky-500"
                     placeholder="e.g. priya@travelagency.com"
                   />
                 </div>
@@ -363,8 +478,8 @@ export default function EmployeesClient() {
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
-                    placeholder="+91..."
+                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    placeholder="+91 98765 43210"
                   />
                 </div>
                 {!editingEmp && (
@@ -375,7 +490,7 @@ export default function EmployeesClient() {
                       required
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                      className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
                     />
                   </div>
                 )}
@@ -385,32 +500,81 @@ export default function EmployeesClient() {
                     type="text"
                     value={formData.designation}
                     onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
                     placeholder="e.g. Senior Tour Specialist"
                   />
                 </div>
-                <div>
-                  <label className="block text-slate-400 mb-1">Department</label>
-                  <select
-                    value={formData.departmentId}
-                    onChange={(e) => setFormData({ ...formData, departmentId: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
-                  >
-                    <option value="">Select Department...</option>
-                    {departments.map((d) => (
-                      <option key={d._id} value={d._id}>
-                        {d.name} ({d.code})
-                      </option>
-                    ))}
-                  </select>
+
+                {/* Dynamic Department Dropdown */}
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-slate-400">Department</label>
+                    {departmentsLoading && (
+                      <span className="text-[10px] text-sky-400 flex items-center gap-1">
+                        <Loader2 className="h-3 w-3 animate-spin" /> Fetching...
+                      </span>
+                    )}
+                  </div>
+
+                  {departmentsError ? (
+                    <div className="p-2 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-[11px] flex items-center justify-between">
+                      <span>{departmentsError}</span>
+                      <button
+                        type="button"
+                        onClick={fetchDepartments}
+                        className="text-sky-400 hover:underline flex items-center gap-1 font-semibold"
+                      >
+                        <RefreshCw className="h-3 w-3" /> Retry
+                      </button>
+                    </div>
+                  ) : (
+                    <select
+                      value={formData.departmentId}
+                      onChange={(e) => setFormData({ ...formData, departmentId: e.target.value })}
+                      className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                      disabled={departmentsLoading}
+                    >
+                      <option value="">Select Department...</option>
+                      {departments.map((d) => {
+                        // Allow selecting if active OR if it is the employee's currently assigned historical department
+                        const isCurrentAssigned = editingEmp && formData.departmentId === d._id;
+                        const isSelectable = d.isActive || isCurrentAssigned;
+
+                        return (
+                          <option
+                            key={d._id}
+                            value={d._id}
+                            disabled={!isSelectable}
+                            className={!d.isActive ? "text-slate-500 bg-slate-900" : "text-white bg-slate-950"}
+                          >
+                            {d.name} ({d.code}) {!d.isActive ? "(Inactive)" : ""}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  )}
+
+                  {!departmentsLoading && departments.length === 0 && !departmentsError && (
+                    <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[11px] flex items-center justify-between mt-1">
+                      <span>No departments exist in MongoDB.</span>
+                      <Link
+                        href="/crm/departments"
+                        className="text-sky-400 hover:underline font-semibold flex items-center gap-1"
+                        target="_blank"
+                      >
+                        Create One <ExternalLink className="h-3 w-3" />
+                      </Link>
+                    </div>
+                  )}
                 </div>
+
                 <div>
                   <label className="block text-slate-400 mb-1">Basic Monthly Salary (₹)</label>
                   <input
                     type="number"
                     value={formData.basicSalary}
                     onChange={(e) => setFormData({ ...formData, basicSalary: Number(e.target.value) })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
                   />
                 </div>
                 <div>
@@ -418,7 +582,7 @@ export default function EmployeesClient() {
                   <select
                     value={formData.employmentType}
                     onChange={(e) => setFormData({ ...formData, employmentType: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
                   >
                     <option value="full_time">Full Time</option>
                     <option value="part_time">Part Time</option>
@@ -426,20 +590,37 @@ export default function EmployeesClient() {
                     <option value="intern">Intern</option>
                   </select>
                 </div>
+
+                {editingEmp && (
+                  <div>
+                    <label className="block text-slate-400 mb-1">Account Status</label>
+                    <select
+                      value={formData.status}
+                      onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                      className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    >
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                      <option value="suspended">Suspended</option>
+                    </select>
+                  </div>
+                )}
               </div>
 
               <div className="pt-4 border-t border-slate-800 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold"
+                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold shadow-lg shadow-sky-500/20"
+                  disabled={submitting}
+                  className="flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold shadow-lg shadow-sky-500/20 disabled:opacity-50 transition"
                 >
+                  {submitting && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                   {editingEmp ? "Save Changes" : "Save Employee"}
                 </button>
               </div>
@@ -450,4 +631,3 @@ export default function EmployeesClient() {
     </div>
   );
 }
-

@@ -292,7 +292,7 @@ export default function PackagesClient() {
           <Mountain className="h-10 w-10 text-slate-600 mx-auto" />
           <p className="text-sm font-semibold text-slate-300">No packages found</p>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Click "Create New Package" to add your agency's signature travel itineraries.
+            Click &quot;Create New Package&quot; to add your agency&apos;s signature travel itineraries.
           </p>
         </div>
       ) : (

@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/guard";
 import connectToDatabase from "@/lib/mongodb";
 import Quotation from "@/models/Quotation";
-import Customer from "@/models/Customer";
-import Package from "@/models/Package";
 
 export const dynamic = "force-dynamic";
 
@@ -145,7 +143,7 @@ export async function POST(req: Request) {
       status: "draft",
       notes: notes || "Valid for 14 days from issue date.",
       terms: terms || "Standard cancellation and refund policy applies.",
-      createdBy: user._id,
+      createdBy: user.id as any,
     });
 
     return NextResponse.json({ success: true, data: newQuotation }, { status: 201 });

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/guard";
 import connectToDatabase from "@/lib/mongodb";
 import Lead from "@/models/Lead";
-import Customer from "@/models/Customer";
 
 export const dynamic = "force-dynamic";
 
@@ -107,7 +106,7 @@ export async function POST(req: Request) {
       priority: priority || "medium",
       status: status || "new",
       notes: notes || "",
-      assignedTo: user._id,
+      assignedTo: user.id,
     });
 
     return NextResponse.json({ success: true, data: newLead }, { status: 201 });

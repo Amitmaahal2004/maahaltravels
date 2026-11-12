@@ -70,7 +70,7 @@ export async function PUT(
           tags: ["Converted from Quotation", quotation.destination],
           totalSpent: quotation.totalAmount,
           bookingsCount: 1,
-          assignedTo: user._id,
+          assignedTo: user.id,
         });
       } else {
         customer.totalSpent = (customer.totalSpent || 0) + quotation.totalAmount;
@@ -113,7 +113,7 @@ export async function PUT(
         paymentStatus: "unpaid",
         bookingStatus: "confirmed",
         specialRequirements: quotation.notes,
-        assignedStaff: user._id,
+        assignedStaff: user.id,
       });
 
       quotation.status = "accepted";

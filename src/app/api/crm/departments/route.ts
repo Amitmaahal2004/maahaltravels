@@ -17,8 +17,12 @@ export async function GET(req: Request) {
 
     const { searchParams } = new URL(req.url);
     const search = searchParams.get("search") || "";
+    const activeOnly = searchParams.get("activeOnly") === "true" || searchParams.get("active") === "true";
 
     const query: any = {};
+    if (activeOnly) {
+      query.isActive = true;
+    }
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: "i" } },
@@ -29,21 +33,22 @@ export async function GET(req: Request) {
 
     const departments = await Department.find(query).sort({ name: 1 });
 
-    // Calculate staff count per department
+    // Calculate staff count per department by aggregating User.departmentId
     const staffCounts = await User.aggregate([
-      { $group: { _id: "$department", count: { $sum: 1 } } },
+      { $match: { departmentId: { $exists: true, $ne: null } } },
+      { $group: { _id: "$departmentId", count: { $sum: 1 } } },
     ]);
-    const countMap = new Map();
+    const countMap = new Map<string, number>();
     staffCounts.forEach((s) => {
       if (s._id) countMap.set(s._id.toString(), s.count);
     });
 
     const enrichedDepts = departments.map((d) => ({
-      _id: d._id,
+      _id: d._id.toString(),
       name: d.name,
       code: d.code,
-      description: d.description,
-      isActive: d.isActive,
+      description: d.description || "",
+      isActive: Boolean(d.isActive),
       staffCount: countMap.get(d._id.toString()) || 0,
       createdAt: d.createdAt,
     }));
@@ -80,10 +85,28 @@ export async function POST(req: Request) {
       );
     }
 
+    const cleanCode = code.toUpperCase().trim();
+    const cleanName = name.trim();
+
+    // Check duplicate code or name
+    const existing = await Department.findOne({
+      $or: [
+        { code: cleanCode },
+        { name: { $regex: `^${cleanName}$`, $options: "i" } },
+      ],
+    });
+
+    if (existing) {
+      return NextResponse.json(
+        { success: false, error: "A department with this name or code already exists" },
+        { status: 400 }
+      );
+    }
+
     const newDept = await Department.create({
-      name,
-      code: code.toUpperCase().trim(),
-      description: description || "",
+      name: cleanName,
+      code: cleanCode,
+      description: description ? description.trim() : "",
       isActive: Boolean(isActive),
     });
 

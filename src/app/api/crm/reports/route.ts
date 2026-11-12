@@ -87,6 +87,7 @@ export async function GET() {
         totalBookings: bookings.length,
         totalCustomers: customers.length,
         totalLeads: leads.length,
+        totalPackages: packages.length,
       },
       monthlyFinancials,
       expenseBreakdown,

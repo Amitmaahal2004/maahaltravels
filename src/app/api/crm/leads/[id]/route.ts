@@ -29,17 +29,20 @@ export async function PUT(
     if (action === "convert") {
       let customer = await Customer.findOne({ email: lead.email.toLowerCase() });
       if (!customer) {
+        const allowedSources = ["website", "whatsapp", "instagram", "google", "referral", "other"] as const;
+        const mappedSource = allowedSources.includes(lead.leadSource as any) ? (lead.leadSource as any) : "other";
+
         customer = await Customer.create({
           name: lead.name,
           email: lead.email.toLowerCase(),
           phone: lead.phone,
           whatsapp: lead.whatsapp || lead.phone,
-          source: lead.leadSource || "website",
+          source: mappedSource,
           customerType: "individual",
           status: "active",
           tags: ["Converted from Lead", lead.destination],
           notes: `Converted from lead on ${new Date().toLocaleDateString()}. Notes: ${lead.notes || "None"}`,
-          assignedTo: user._id,
+          assignedTo: user.id,
         });
       }
 

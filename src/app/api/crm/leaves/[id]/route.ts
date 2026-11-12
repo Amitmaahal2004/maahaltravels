@@ -25,7 +25,7 @@ export async function PUT(
     }
 
     leave.status = status;
-    leave.approvedBy = user._id;
+    leave.approvedBy = user.id as any;
     leave.approvedByName = user.name;
     if (rejectionReason) leave.rejectionReason = rejectionReason;
 

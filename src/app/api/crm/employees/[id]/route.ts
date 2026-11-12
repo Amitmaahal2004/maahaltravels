@@ -3,6 +3,8 @@ import { getCurrentUser } from "@/lib/auth/guard";
 import connectToDatabase from "@/lib/mongodb";
 import User from "@/models/User";
 import EmployeeProfile from "@/models/EmployeeProfile";
+import Department from "@/models/Department";
+import mongoose from "mongoose";
 
 export const dynamic = "force-dynamic";
 
@@ -26,16 +28,35 @@ export async function PUT(
       return NextResponse.json({ success: false, error: "Employee user not found" }, { status: 404 });
     }
 
+    // Validate Department if provided
+    let verifiedDeptId: mongoose.Types.ObjectId | null = null;
+    if (departmentId !== undefined) {
+      if (departmentId && departmentId !== "") {
+        if (!mongoose.Types.ObjectId.isValid(departmentId)) {
+          return NextResponse.json({ success: false, error: "Invalid Department identifier" }, { status: 400 });
+        }
+        const dept = await Department.findById(departmentId);
+        if (!dept) {
+          return NextResponse.json({ success: false, error: "Department not found in database" }, { status: 404 });
+        }
+        verifiedDeptId = dept._id;
+      }
+    }
+
     if (name) userObj.name = name;
-    if (phone) userObj.phone = phone;
+    if (phone !== undefined) userObj.phone = phone;
     if (status) userObj.status = status;
-    if (departmentId) userObj.department = departmentId;
+    if (departmentId !== undefined) {
+      userObj.departmentId = verifiedDeptId || undefined;
+    }
     await userObj.save();
 
-    let profile = await EmployeeProfile.findOne({ userId: userObj._id });
+    const profile = await EmployeeProfile.findOne({ userId: userObj._id });
     if (profile) {
       if (designation) profile.designation = designation;
-      if (departmentId) profile.departmentId = departmentId;
+      if (departmentId !== undefined && verifiedDeptId) {
+        profile.departmentId = verifiedDeptId;
+      }
       if (employmentType) profile.employmentType = employmentType;
       if (basicSalary) {
         profile.salary = {
@@ -44,10 +65,21 @@ export async function PUT(
           currency: "INR",
         };
       }
+      if (status && ["active", "on_notice", "resigned", "terminated"].includes(status)) {
+        profile.status = status as any;
+      }
       await profile.save();
     }
 
-    return NextResponse.json({ success: true, message: "Employee profile updated successfully" });
+    return NextResponse.json({
+      success: true,
+      message: "Employee profile and department assignment updated successfully",
+      data: {
+        _id: userObj._id.toString(),
+        name: userObj.name,
+        departmentId: userObj.departmentId?.toString() || "",
+      },
+    });
   } catch (error: any) {
     console.error("PUT /api/crm/employees/[id] error:", error);
     return NextResponse.json(

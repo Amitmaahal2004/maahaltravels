@@ -258,7 +258,7 @@ export default function DestinationsClient() {
           <Globe className="h-10 w-10 text-slate-600 mx-auto" />
           <p className="text-sm font-semibold text-slate-300">No destinations found</p>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Click "Add Destination" to register Himalayan travel regions and states.
+            Click &quot;Add Destination&quot; to register Himalayan travel regions and states.
           </p>
         </div>
       ) : (

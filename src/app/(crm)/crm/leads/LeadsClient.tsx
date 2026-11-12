@@ -357,7 +357,7 @@ export default function LeadsClient() {
           <Filter className="h-10 w-10 text-slate-600 mx-auto" />
           <p className="text-sm font-semibold text-slate-300">No leads found matching your criteria</p>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Try adjusting your search filters or click "Add New Lead" to register a new inquiry.
+            Try adjusting your search filters or click &quot;Add New Lead&quot; to register a new inquiry.
           </p>
         </div>
       ) : viewMode === "kanban" ? (

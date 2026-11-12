@@ -74,7 +74,6 @@ export async function POST(req: Request) {
       customerEmail,
       customerPhone,
       items,
-      subtotal,
       discount = 0,
       gstRate = 5,
       notes,
@@ -111,9 +110,9 @@ export async function POST(req: Request) {
 
     const newInvoice = await Invoice.create({
       invoiceNumber,
-      bookingId: bookingId || user._id, // fallback if manual
+      bookingId: bookingId || user.id, // fallback if manual
       bookingRef: bookingRef ? bookingRef.toUpperCase() : `DIRECT-${Date.now().toString().slice(-4)}`,
-      customerId: user._id, // fallback
+      customerId: user.id, // fallback
       customerName,
       customerEmail: customerEmail.toLowerCase(),
       customerPhone: customerPhone || "",

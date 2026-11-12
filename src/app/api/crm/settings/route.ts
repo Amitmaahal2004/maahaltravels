@@ -59,7 +59,7 @@ export async function PUT(req: Request) {
       {
         key: "general_settings",
         value: body,
-        updatedBy: user._id,
+        updatedBy: user.id as any,
       },
       { upsert: true, new: true }
     );

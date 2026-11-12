@@ -108,7 +108,7 @@ export async function POST(req: Request) {
         tags: ["Direct Booking", packageName],
         totalSpent: Number(totalAmount),
         bookingsCount: 1,
-        assignedTo: user._id,
+        assignedTo: user.id,
       });
     } else {
       customer.totalSpent = (customer.totalSpent || 0) + Number(totalAmount);
@@ -154,7 +154,7 @@ export async function POST(req: Request) {
       paymentStatus,
       bookingStatus,
       specialRequirements: specialRequirements || "",
-      assignedStaff: user._id,
+      assignedStaff: user.id,
     });
 
     // Auto-create invoice

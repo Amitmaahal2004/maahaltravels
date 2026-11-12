@@ -197,7 +197,7 @@ export default function PaymentsClient() {
           <CreditCard className="h-10 w-10 text-slate-600 mx-auto" />
           <p className="text-sm font-semibold text-slate-300">No payment receipts logged</p>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Click "Record Payment" to clear booking balances and issue digital receipt slips.
+            Click &quot;Record Payment&quot; to clear booking balances and issue digital receipt slips.
           </p>
         </div>
       ) : (

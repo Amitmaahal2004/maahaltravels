@@ -64,9 +64,9 @@ export async function POST(req: Request) {
     }
 
     const newLeave = await LeaveRequest.create({
-      userId: user._id,
+      userId: user.id,
       userName: user.name,
-      departmentId: user.department?._id || undefined,
+      departmentId: user.department?.id || undefined,
       leaveType,
       startDate: new Date(startDate),
       endDate: new Date(endDate),

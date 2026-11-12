@@ -232,7 +232,7 @@ export default function TasksClient() {
           <CheckSquare className="h-10 w-10 text-slate-600 mx-auto" />
           <p className="text-sm font-semibold text-slate-300">No tasks pending</p>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Everything is up to date! Click "Create New Task" to delegate operational duties.
+            Everything is up to date! Click &quot;Create New Task&quot; to delegate operational duties.
           </p>
         </div>
       ) : (

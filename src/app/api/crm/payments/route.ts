@@ -106,7 +106,7 @@ export async function POST(req: Request) {
       transactionRef: transactionRef || `TXN-${Date.now().toString().slice(-6)}`,
       paymentDate: new Date(),
       status: "completed",
-      recordedBy: user._id,
+      recordedBy: user.id,
       notes: notes || "",
     });
 

@@ -23,7 +23,7 @@ export async function GET(req: Request) {
 
     // Check current logged-in user's attendance for today
     const myTodayRecord = await Attendance.findOne({
-      userId: user._id,
+      userId: user.id,
       date: todayStr,
     });
 
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
     const todayStr = new Date().toISOString().split("T")[0];
 
     let record = await Attendance.findOne({
-      userId: user._id,
+      userId: user.id,
       date: todayStr,
     });
 
@@ -82,9 +82,9 @@ export async function POST(req: Request) {
       const isLate = hours > 9 || (hours === 9 && mins > 30);
 
       record = await Attendance.create({
-        userId: user._id,
+        userId: user.id,
         userName: user.name,
-        departmentId: user.department?._id || undefined,
+        departmentId: user.department?.id || undefined,
         date: todayStr,
         checkInTime: now,
         totalWorkingHours: 0,
@@ -124,7 +124,7 @@ export async function POST(req: Request) {
     // Manual Admin entry
     const { userId, userName, date, checkInTime, checkOutTime, status } = body;
     const manualRecord = await Attendance.create({
-      userId: userId || user._id,
+      userId: userId || user.id,
       userName: userName || user.name,
       date: date || todayStr,
       checkInTime: checkInTime ? new Date(checkInTime) : new Date(),

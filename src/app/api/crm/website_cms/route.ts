@@ -56,7 +56,7 @@ export async function POST(req: Request) {
         subtitle: subtitle || "",
         content: content || "",
         isPublished: Boolean(isPublished),
-        updatedBy: user._id,
+        updatedBy: user.id as any,
       },
       { upsert: true, new: true }
     );
