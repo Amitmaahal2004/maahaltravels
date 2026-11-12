@@ -17,7 +17,7 @@ export async function GET() {
     const generalSetting = await SystemSetting.findOne({ key: "general_settings" });
 
     const defaultSettings = {
-      agencyName: "Himalayan Vistas – Travel OS Enterprise",
+      agencyName: "Explore My Packages – Travel OS Enterprise",
       tagline: "Curated High-Altitude Himalayan Expeditions",
       supportEmail: "support@himalayanvistas.com",
       phone: "+91 98765 43210",

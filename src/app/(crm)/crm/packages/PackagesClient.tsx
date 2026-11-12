@@ -201,15 +201,15 @@ export default function PackagesClient() {
   return (
     <div className="space-y-6 animate-fadeIn pb-12">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-white border border-slate-200 shadow-xs">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-sky-500/10 text-sky-400">
+            <span className="p-2 rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
               <Package className="h-5 w-5" />
             </span>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Tour Packages Catalog</h1>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Tour Packages Catalog</h1>
           </div>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-slate-500">
             Design, price, and publish Himalayan adventure itineraries and cultural holiday packages.
           </p>
         </div>
@@ -220,7 +220,7 @@ export default function PackagesClient() {
             setEditingPkg(null);
             setShowAddModal(true);
           }}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-sky-500/20 transition self-start md:self-auto"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition self-start md:self-auto"
         >
           <Plus className="h-4 w-4" />
           Create New Package
@@ -229,22 +229,22 @@ export default function PackagesClient() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
-          <p className="text-xs text-slate-400">Total Packages</p>
-          <p className="text-2xl font-bold text-white mt-1">{summary.totalPackages}</p>
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <p className="text-xs text-slate-500 font-medium">Total Packages</p>
+          <p className="text-2xl font-bold text-slate-900 mt-1">{summary.totalPackages}</p>
         </div>
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
-          <p className="text-xs text-slate-400">Published Live</p>
-          <p className="text-2xl font-bold text-emerald-400 mt-1">{summary.publishedCount}</p>
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <p className="text-xs text-slate-500 font-medium">Published Live</p>
+          <p className="text-2xl font-bold text-emerald-600 mt-1">{summary.publishedCount}</p>
         </div>
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
-          <p className="text-xs text-slate-400">In Draft Review</p>
-          <p className="text-2xl font-bold text-amber-400 mt-1">{summary.draftCount}</p>
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <p className="text-xs text-slate-500 font-medium">In Draft Review</p>
+          <p className="text-2xl font-bold text-amber-600 mt-1">{summary.draftCount}</p>
         </div>
       </div>
 
       {/* Search & Filters */}
-      <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900 border border-slate-800">
+      <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
         <div className="relative flex-1 min-w-[240px]">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input
@@ -252,7 +252,7 @@ export default function PackagesClient() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search packages by name, code, or destination..."
-            className="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500"
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-blue-500 transition"
           />
         </div>
 
@@ -260,7 +260,7 @@ export default function PackagesClient() {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-sky-500"
+            className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-blue-500 shadow-xs"
           >
             <option value="all">All Categories</option>
             <option value="Himalayan Treks">Himalayan Treks</option>
@@ -272,7 +272,7 @@ export default function PackagesClient() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-sky-500"
+            className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-blue-500 shadow-xs"
           >
             <option value="all">All Statuses</option>
             <option value="published">Published</option>
@@ -283,14 +283,14 @@ export default function PackagesClient() {
 
       {/* Grid of Packages */}
       {loading ? (
-        <div className="p-12 text-center text-slate-400 flex flex-col items-center gap-3">
-          <div className="h-8 w-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
+        <div className="p-12 text-center text-slate-500 flex flex-col items-center gap-3">
+          <div className="h-8 w-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
           <span className="text-xs">Loading Packages from MongoDB Atlas...</span>
         </div>
       ) : packages.length === 0 ? (
-        <div className="p-12 text-center bg-slate-900 border border-slate-800 rounded-3xl space-y-3">
-          <Mountain className="h-10 w-10 text-slate-600 mx-auto" />
-          <p className="text-sm font-semibold text-slate-300">No packages found</p>
+        <div className="p-12 text-center bg-white border border-slate-200 rounded-3xl space-y-3 shadow-xs">
+          <Mountain className="h-10 w-10 text-slate-400 mx-auto" />
+          <p className="text-sm font-semibold text-slate-800">No packages found</p>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
             Click &quot;Create New Package&quot; to add your agency&apos;s signature travel itineraries.
           </p>
@@ -304,74 +304,75 @@ export default function PackagesClient() {
             return (
               <div
                 key={pkg._id}
-                className="rounded-3xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition overflow-hidden shadow-lg flex flex-col justify-between"
+                className="rounded-3xl bg-white border border-slate-200 hover:border-slate-300 transition overflow-hidden shadow-xs flex flex-col justify-between"
               >
                 <div className="p-5 space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-sky-950/80 text-sky-400 border border-sky-800/80 uppercase">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200 uppercase">
                       {pkg.code}
                     </span>
                     <button
                       onClick={() => handleToggleStatus(pkg)}
-                      className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase cursor-pointer transition ${pkg.status === "published"
-                          ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                          : "bg-amber-500/20 text-amber-400 border border-amber-500/30"
-                        }`}
+                      className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase cursor-pointer transition border ${
+                        pkg.status === "published"
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          : "bg-amber-50 text-amber-700 border-amber-200"
+                      }`}
                     >
                       {pkg.status}
                     </button>
                   </div>
 
                   <div>
-                    <h3 className="text-base font-bold text-white leading-snug">{pkg.name}</h3>
-                    <p className="text-xs text-slate-400 flex items-center gap-1.5 mt-1">
-                      <MapPin className="h-3.5 w-3.5 text-sky-400" />
+                    <h3 className="text-base font-bold text-slate-900 leading-snug">{pkg.name}</h3>
+                    <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-1 font-medium">
+                      <MapPin className="h-3.5 w-3.5 text-blue-600" />
                       {pkg.destination}
                     </p>
                   </div>
 
-                  <p className="text-xs text-slate-400 line-clamp-2">{pkg.shortDescription}</p>
+                  <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">{pkg.shortDescription}</p>
 
-                  <div className="flex items-center gap-3 text-xs text-slate-300 pt-2 border-t border-slate-800">
+                  <div className="flex items-center gap-3 text-xs text-slate-600 pt-2 border-t border-slate-100">
                     <span className="flex items-center gap-1">
-                      <Clock className="h-3.5 w-3.5 text-indigo-400" />
+                      <Clock className="h-3.5 w-3.5 text-indigo-600" />
                       {pkg.durationDays}D / {pkg.durationNights}N
                     </span>
-                    <span className="capitalize px-2 py-0.5 rounded bg-slate-800 text-[10px] font-medium text-slate-400">
+                    <span className="capitalize px-2 py-0.5 rounded bg-slate-100 text-[10px] font-medium text-slate-700">
                       {pkg.difficulty}
                     </span>
                   </div>
 
                   {/* Pricing info */}
-                  <div className="p-3 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-between">
+                  <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                     <div>
                       <span className="text-[10px] text-slate-500 block">Selling Price</span>
-                      <span className="text-sm font-bold text-emerald-400">
+                      <span className="text-sm font-bold text-emerald-600">
                         {formatCurrency(pkg.sellingPrice)}
                       </span>
                     </div>
                     <div className="text-right">
                       <span className="text-[10px] text-slate-500 block">Profit Margin</span>
-                      <span className="text-xs font-semibold text-sky-400">
+                      <span className="text-xs font-semibold text-blue-600">
                         {formatCurrency(margin)} ({marginPercent}%)
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-4 bg-slate-950/40 border-t border-slate-800 flex items-center justify-between">
+                <div className="p-4 bg-slate-50/60 border-t border-slate-100 flex items-center justify-between">
                   <span className="text-[11px] text-slate-500 font-medium">{pkg.category}</span>
                   <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => openEdit(pkg)}
-                      className="p-1.5 text-sky-400 hover:bg-sky-950/50 rounded-lg transition"
+                      className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition"
                       title="Edit Package"
                     >
                       <Edit2 className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(pkg._id)}
-                      className="p-1.5 text-rose-400 hover:bg-rose-950/50 rounded-lg transition"
+                      className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition"
                       title="Delete Package"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -386,10 +387,10 @@ export default function PackagesClient() {
 
       {/* Add / Edit Package Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-2xl rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
-            <div className="p-6 border-b border-slate-800 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-2xl rounded-3xl bg-white border border-slate-200 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-slate-900">
                 {editingPkg ? "Edit Tour Package" : "Create Tour Package"}
               </h2>
               <button
@@ -397,7 +398,7 @@ export default function PackagesClient() {
                   setShowAddModal(false);
                   setEditingPkg(null);
                 }}
-                className="text-slate-400 hover:text-white"
+                className="text-slate-400 hover:text-slate-600 text-xl font-bold"
               >
                 &times;
               </button>
@@ -406,82 +407,82 @@ export default function PackagesClient() {
             <form onSubmit={handleSave} className="p-6 space-y-4 overflow-y-auto flex-1 text-xs">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-400 mb-1">Package Title *</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Package Title *</label>
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                     placeholder="e.g. 6D5N Ladakh High Passes Expedition"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Destination *</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Destination *</label>
                   <input
                     type="text"
                     required
                     value={formData.destination}
                     onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                     placeholder="e.g. Leh-Ladakh"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Duration Days</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Duration Days</label>
                   <input
                     type="number"
                     min="1"
                     value={formData.durationDays}
                     onChange={(e) => setFormData({ ...formData, durationDays: Number(e.target.value) })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Duration Nights</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Duration Nights</label>
                   <input
                     type="number"
                     min="0"
                     value={formData.durationNights}
                     onChange={(e) => setFormData({ ...formData, durationNights: Number(e.target.value) })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Selling Price (₹) *</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Selling Price (₹) *</label>
                   <input
                     type="number"
                     required
                     value={formData.sellingPrice}
                     onChange={(e) => setFormData({ ...formData, sellingPrice: Number(e.target.value) })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Starting Price (₹) *</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Starting Price (₹) *</label>
                   <input
                     type="number"
                     required
                     value={formData.startingPrice}
                     onChange={(e) => setFormData({ ...formData, startingPrice: Number(e.target.value) })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Internal Cost (₹)</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Internal Cost (₹)</label>
                   <input
                     type="number"
                     value={formData.internalCost}
                     onChange={(e) => setFormData({ ...formData, internalCost: Number(e.target.value) })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Category</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Category</label>
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                   >
                     <option value="Himalayan Treks">Himalayan Treks</option>
                     <option value="Cultural & Heritage">Cultural & Heritage</option>
@@ -490,11 +491,11 @@ export default function PackagesClient() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Difficulty</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Difficulty</label>
                   <select
                     value={formData.difficulty}
                     onChange={(e) => setFormData({ ...formData, difficulty: e.target.value as any })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                   >
                     <option value="easy">Easy</option>
                     <option value="moderate">Moderate</option>
@@ -503,11 +504,11 @@ export default function PackagesClient() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Publish Status</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Publish Status</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                   >
                     <option value="published">Published</option>
                     <option value="draft">Draft</option>
@@ -516,47 +517,47 @@ export default function PackagesClient() {
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1">Short Overview</label>
+                <label className="block text-slate-700 font-semibold mb-1">Short Overview</label>
                 <textarea
                   rows={2}
                   value={formData.shortDescription}
                   onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
                   placeholder="Catchy package summary..."
-                  className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                  className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1">Inclusions (Comma separated)</label>
+                <label className="block text-slate-700 font-semibold mb-1">Inclusions (Comma separated)</label>
                 <input
                   type="text"
                   value={formData.inclusions}
                   onChange={(e) => setFormData({ ...formData, inclusions: e.target.value })}
-                  className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                  className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1">Exclusions (Comma separated)</label>
+                <label className="block text-slate-700 font-semibold mb-1">Exclusions (Comma separated)</label>
                 <input
                   type="text"
                   value={formData.exclusions}
                   onChange={(e) => setFormData({ ...formData, exclusions: e.target.value })}
-                  className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                  className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                 />
               </div>
 
-              <div className="pt-4 border-t border-slate-800 flex justify-end gap-3">
+              <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold"
+                  className="px-4 py-2 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold shadow-xs"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold shadow-lg shadow-sky-500/20"
+                  className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-xs transition"
                 >
                   {editingPkg ? "Save Changes" : "Save Package"}
                 </button>

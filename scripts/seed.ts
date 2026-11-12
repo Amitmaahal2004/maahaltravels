@@ -211,7 +211,7 @@ export async function runSeed(options: { silent?: boolean } = {}) {
     await SystemSetting.create({
       key: "general",
       value: {
-        agencyName: "Himalayan Vistas & Beyond",
+        agencyName: "Explore My Packages & Beyond",
         tagline: "Curated Expeditions & Bespoke Travel",
         contactEmail: "info@travelagency.com",
         contactPhone: "+91 98765 43210",

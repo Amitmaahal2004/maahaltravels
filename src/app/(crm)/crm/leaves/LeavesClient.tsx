@@ -117,22 +117,22 @@ export default function LeavesClient() {
   return (
     <div className="space-y-6 animate-fadeIn pb-12">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl bg-white border border-slate-200 shadow-xs">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-sky-500/10 text-sky-400">
+            <span className="p-2 rounded-xl bg-blue-50 text-blue-600">
               <CalendarOff className="h-5 w-5" />
             </span>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Leave Management & Approvals</h1>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Leave Management & Approvals</h1>
           </div>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-slate-500">
             Submit vacation, medical, and casual leave requests with administrative review workflows.
           </p>
         </div>
 
         <button
           onClick={() => setShowApplyModal(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-sky-500/20 transition self-start md:self-auto"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition self-start md:self-auto"
         >
           <Plus className="h-4 w-4" />
           Apply for Leave
@@ -141,27 +141,27 @@ export default function LeavesClient() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
-          <p className="text-xs text-slate-400">Total Applications</p>
-          <p className="text-2xl font-bold text-white mt-1">{summary.totalRequests}</p>
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <p className="text-xs text-slate-500 font-medium">Total Applications</p>
+          <p className="text-2xl font-bold text-slate-900 mt-1">{summary.totalRequests}</p>
         </div>
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
-          <p className="text-xs text-slate-400">Awaiting Manager Approval</p>
-          <p className="text-2xl font-bold text-amber-400 mt-1">{summary.pendingCount}</p>
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <p className="text-xs text-slate-500 font-medium">Awaiting Manager Approval</p>
+          <p className="text-2xl font-bold text-amber-600 mt-1">{summary.pendingCount}</p>
         </div>
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
-          <p className="text-xs text-slate-400">Approved Leaves</p>
-          <p className="text-2xl font-bold text-emerald-400 mt-1">{summary.approvedCount}</p>
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <p className="text-xs text-slate-500 font-medium">Approved Leaves</p>
+          <p className="text-2xl font-bold text-emerald-600 mt-1">{summary.approvedCount}</p>
         </div>
       </div>
 
       {/* Filter */}
-      <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900 border border-slate-800">
-        <span className="text-xs text-slate-400 font-semibold">Filter by Status:</span>
+      <div className="flex items-center justify-between p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+        <span className="text-xs text-slate-600 font-semibold">Filter by Status:</span>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-sky-500"
+          className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-blue-600 shadow-xs"
         >
           <option value="all">All Requests</option>
           <option value="pending">Pending</option>
@@ -172,20 +172,20 @@ export default function LeavesClient() {
 
       {/* Table of Leaves */}
       {loading ? (
-        <div className="p-12 text-center text-slate-400 flex flex-col items-center gap-3">
-          <div className="h-8 w-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
+        <div className="p-12 text-center text-slate-500 flex flex-col items-center gap-3">
+          <div className="h-8 w-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
           <span className="text-xs">Loading Leave Records...</span>
         </div>
       ) : leaves.length === 0 ? (
-        <div className="p-12 text-center bg-slate-900 border border-slate-800 rounded-3xl space-y-3">
-          <CalendarOff className="h-10 w-10 text-slate-600 mx-auto" />
-          <p className="text-sm font-semibold text-slate-300">No leave requests found</p>
+        <div className="p-12 text-center bg-white border border-slate-200 rounded-2xl shadow-xs space-y-3">
+          <CalendarOff className="h-10 w-10 text-slate-400 mx-auto" />
+          <p className="text-sm font-semibold text-slate-800">No leave requests found</p>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-2xl bg-slate-900 border border-slate-800">
+        <div className="overflow-x-auto rounded-2xl bg-white border border-slate-200 shadow-xs">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-slate-800 bg-slate-950/60 text-slate-400 font-semibold">
+              <tr className="border-b border-slate-200 bg-slate-50 text-slate-700 font-semibold">
                 <th className="p-3.5">Staff Member</th>
                 <th className="p-3.5">Type</th>
                 <th className="p-3.5">Date Range</th>
@@ -195,24 +195,24 @@ export default function LeavesClient() {
                 <th className="p-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-slate-100">
               {leaves.map((l) => (
-                <tr key={l._id} className="hover:bg-slate-800/40 transition">
-                  <td className="p-3.5 font-bold text-white">{l.userName}</td>
-                  <td className="p-3.5 capitalize font-medium text-sky-400">{l.leaveType}</td>
-                  <td className="p-3.5 text-slate-300">
+                <tr key={l._id} className="hover:bg-slate-50/70 transition">
+                  <td className="p-3.5 font-bold text-slate-900">{l.userName}</td>
+                  <td className="p-3.5 capitalize font-medium text-blue-600">{l.leaveType}</td>
+                  <td className="p-3.5 text-slate-700">
                     {formatDate(l.startDate)} &rarr; {formatDate(l.endDate)}
                   </td>
-                  <td className="p-3.5 font-bold text-slate-200">{l.totalDays} Days</td>
-                  <td className="p-3.5 text-slate-300 max-w-xs truncate">{l.reason}</td>
+                  <td className="p-3.5 font-bold text-slate-900">{l.totalDays} Days</td>
+                  <td className="p-3.5 text-slate-600 max-w-xs truncate">{l.reason}</td>
                   <td className="p-3.5">
                     <span
                       className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase ${
                         l.status === "approved"
-                          ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                           : l.status === "pending"
-                          ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
-                          : "bg-rose-500/20 text-rose-400 border border-rose-500/30"
+                          ? "bg-amber-50 text-amber-700 border border-amber-200"
+                          : "bg-rose-50 text-rose-700 border border-rose-200"
                       }`}
                     >
                       {l.status}
@@ -223,13 +223,13 @@ export default function LeavesClient() {
                       <>
                         <button
                           onClick={() => handleDecision(l._id, "approved")}
-                          className="px-2 py-1 text-[10px] rounded-lg bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 font-semibold border border-emerald-500/30 transition"
+                          className="px-2 py-1 text-[10px] rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-semibold border border-emerald-200 transition shadow-xs"
                         >
                           Approve
                         </button>
                         <button
                           onClick={() => handleDecision(l._id, "rejected")}
-                          className="px-2 py-1 text-[10px] rounded-lg bg-rose-600/20 text-rose-400 hover:bg-rose-600/30 font-semibold border border-rose-500/30 transition"
+                          className="px-2 py-1 text-[10px] rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 font-semibold border border-rose-200 transition shadow-xs"
                         >
                           Reject
                         </button>
@@ -237,7 +237,7 @@ export default function LeavesClient() {
                     )}
                     <button
                       onClick={() => handleDelete(l._id)}
-                      className="p-1.5 text-rose-400 hover:bg-rose-950/50 rounded-lg transition"
+                      className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition"
                       title="Delete Request"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -252,22 +252,22 @@ export default function LeavesClient() {
 
       {/* Apply Modal */}
       {showApplyModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-md rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h2 className="text-lg font-bold text-white">Apply for Leave</h2>
-              <button onClick={() => setShowApplyModal(false)} className="text-slate-400 hover:text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-md rounded-2xl bg-white border border-slate-200 shadow-2xl overflow-hidden p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <h2 className="text-lg font-bold text-slate-900">Apply for Leave</h2>
+              <button onClick={() => setShowApplyModal(false)} className="text-slate-400 hover:text-slate-600 text-lg">
                 &times;
               </button>
             </div>
 
             <form onSubmit={handleApply} className="space-y-4 text-xs">
               <div>
-                <label className="block text-slate-400 mb-1">Leave Category</label>
+                <label className="block text-slate-700 font-medium mb-1">Leave Category</label>
                 <select
                   value={formData.leaveType}
                   onChange={(e) => setFormData({ ...formData, leaveType: e.target.value as any })}
-                  className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                  className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                 >
                   <option value="casual">Casual Leave</option>
                   <option value="sick">Sick / Medical Leave</option>
@@ -278,61 +278,61 @@ export default function LeavesClient() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-400 mb-1">Start Date *</label>
+                  <label className="block text-slate-700 font-medium mb-1">Start Date *</label>
                   <input
                     type="date"
                     required
                     value={formData.startDate}
                     onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">End Date *</label>
+                  <label className="block text-slate-700 font-medium mb-1">End Date *</label>
                   <input
                     type="date"
                     required
                     value={formData.endDate}
                     onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1">Total Days</label>
+                <label className="block text-slate-700 font-medium mb-1">Total Days</label>
                 <input
                   type="number"
                   min="1"
                   value={formData.totalDays}
                   onChange={(e) => setFormData({ ...formData, totalDays: Number(e.target.value) })}
-                  className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                  className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1">Reason for Leave *</label>
+                <label className="block text-slate-700 font-medium mb-1">Reason for Leave *</label>
                 <textarea
                   rows={2}
                   required
                   value={formData.reason}
                   onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
                   placeholder="Explain why you are requesting leave..."
-                  className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white"
+                  className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                 />
               </div>
 
-              <div className="pt-2 border-t border-slate-800 flex justify-end gap-3">
+              <div className="pt-2 border-t border-slate-200 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setShowApplyModal(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold"
+                  className="px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 font-semibold hover:bg-slate-50 transition shadow-xs"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold shadow-lg shadow-sky-500/20"
+                  className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-xs transition"
                 >
                   Submit Application
                 </button>

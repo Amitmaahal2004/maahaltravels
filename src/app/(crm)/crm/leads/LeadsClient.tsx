@@ -226,44 +226,50 @@ export default function LeadsClient() {
   };
 
   const stages = [
-    { key: "new", label: "New Inquiry", color: "border-sky-500/40 bg-sky-950/20 text-sky-400" },
-    { key: "contacted", label: "Contacted", color: "border-amber-500/40 bg-amber-950/20 text-amber-400" },
-    { key: "interested", label: "Interested", color: "border-indigo-500/40 bg-indigo-950/20 text-indigo-400" },
-    { key: "quotation_sent", label: "Quotation Sent", color: "border-purple-500/40 bg-purple-950/20 text-purple-400" },
-    { key: "converted", label: "Converted", color: "border-emerald-500/40 bg-emerald-950/20 text-emerald-400" },
-    { key: "lost", label: "Lost", color: "border-rose-500/40 bg-rose-950/20 text-rose-400" },
+    { key: "new", label: "New Inquiry", color: "border-blue-200 bg-blue-50 text-blue-700" },
+    { key: "contacted", label: "Contacted", color: "border-amber-200 bg-amber-50 text-amber-700" },
+    { key: "interested", label: "Interested", color: "border-indigo-200 bg-indigo-50 text-indigo-700" },
+    { key: "quotation_sent", label: "Quotation Sent", color: "border-purple-200 bg-purple-50 text-purple-700" },
+    { key: "converted", label: "Converted", color: "border-emerald-200 bg-emerald-50 text-emerald-700" },
+    { key: "lost", label: "Lost", color: "border-rose-200 bg-rose-50 text-rose-700" },
   ];
 
   return (
     <div className="space-y-6 animate-fadeIn pb-12">
       {/* Top Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-white border border-slate-200 shadow-xs">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-sky-500/10 text-sky-400">
+            <span className="p-2 rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
               <Filter className="h-5 w-5" />
             </span>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Leads & Sales Pipeline</h1>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Leads & Sales Pipeline</h1>
           </div>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-slate-500">
             Track, nurture, and convert travel inquiries into confirmed bookings with real-time Atlas sync.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center bg-slate-950 border border-slate-800 rounded-xl p-1">
+          <div className="flex items-center bg-slate-100 border border-slate-200 rounded-xl p-1">
             <button
               onClick={() => setViewMode("kanban")}
-              className={`p-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${viewMode === "kanban" ? "bg-sky-600 text-white shadow-sm" : "text-slate-400 hover:text-white"
-                }`}
+              className={`p-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
+                viewMode === "kanban"
+                  ? "bg-white text-blue-600 shadow-xs border border-slate-200"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
             >
               <LayoutGrid className="h-4 w-4" />
               Kanban
             </button>
             <button
               onClick={() => setViewMode("table")}
-              className={`p-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${viewMode === "table" ? "bg-sky-600 text-white shadow-sm" : "text-slate-400 hover:text-white"
-                }`}
+              className={`p-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
+                viewMode === "table"
+                  ? "bg-white text-blue-600 shadow-xs border border-slate-200"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
             >
               <List className="h-4 w-4" />
               Table
@@ -276,7 +282,7 @@ export default function LeadsClient() {
               setEditingLead(null);
               setShowAddModal(true);
             }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-sky-500/20 transition"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition"
           >
             <Plus className="h-4 w-4" />
             Add New Lead
@@ -286,26 +292,26 @@ export default function LeadsClient() {
 
       {/* KPI Metric Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
-          <p className="text-xs text-slate-400">Total Leads</p>
-          <p className="text-2xl font-bold text-white mt-1">{summary.totalLeads}</p>
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <p className="text-xs text-slate-500 font-medium">Total Leads</p>
+          <p className="text-2xl font-bold text-slate-900 mt-1">{summary.totalLeads}</p>
         </div>
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
-          <p className="text-xs text-slate-400">New Inquiries</p>
-          <p className="text-2xl font-bold text-sky-400 mt-1">{summary.newLeads}</p>
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <p className="text-xs text-slate-500 font-medium">New Inquiries</p>
+          <p className="text-2xl font-bold text-blue-600 mt-1">{summary.newLeads}</p>
         </div>
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
-          <p className="text-xs text-slate-400">Converted to Customers</p>
-          <p className="text-2xl font-bold text-emerald-400 mt-1">{summary.convertedLeads}</p>
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <p className="text-xs text-slate-500 font-medium">Converted to Customers</p>
+          <p className="text-2xl font-bold text-emerald-600 mt-1">{summary.convertedLeads}</p>
         </div>
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
-          <p className="text-xs text-slate-400">Pipeline Conversion Rate</p>
-          <p className="text-2xl font-bold text-indigo-400 mt-1">{summary.conversionRate}%</p>
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <p className="text-xs text-slate-500 font-medium">Pipeline Conversion Rate</p>
+          <p className="text-2xl font-bold text-indigo-600 mt-1">{summary.conversionRate}%</p>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900 border border-slate-800">
+      <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
         <div className="relative flex-1 min-w-[240px]">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input
@@ -313,7 +319,7 @@ export default function LeadsClient() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search leads by name, email, phone, or destination..."
-            className="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500"
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-blue-500 transition"
           />
         </div>
 
@@ -321,7 +327,7 @@ export default function LeadsClient() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-sky-500"
+            className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-blue-500 shadow-xs"
           >
             <option value="all">All Stages</option>
             <option value="new">New</option>
@@ -335,7 +341,7 @@ export default function LeadsClient() {
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
-            className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-sky-500"
+            className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-blue-500 shadow-xs"
           >
             <option value="all">All Priorities</option>
             <option value="urgent">Urgent</option>
@@ -348,14 +354,14 @@ export default function LeadsClient() {
 
       {/* Content Rendering */}
       {loading ? (
-        <div className="p-12 text-center text-slate-400 flex flex-col items-center gap-3">
-          <div className="h-8 w-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
+        <div className="p-12 text-center text-slate-500 flex flex-col items-center gap-3">
+          <div className="h-8 w-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
           <span className="text-xs">Loading Leads Pipeline from MongoDB Atlas...</span>
         </div>
       ) : leads.length === 0 ? (
-        <div className="p-12 text-center bg-slate-900 border border-slate-800 rounded-3xl space-y-3">
-          <Filter className="h-10 w-10 text-slate-600 mx-auto" />
-          <p className="text-sm font-semibold text-slate-300">No leads found matching your criteria</p>
+        <div className="p-12 text-center bg-white border border-slate-200 rounded-3xl space-y-3 shadow-xs">
+          <Filter className="h-10 w-10 text-slate-400 mx-auto" />
+          <p className="text-sm font-semibold text-slate-800">No leads found matching your criteria</p>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
             Try adjusting your search filters or click &quot;Add New Lead&quot; to register a new inquiry.
           </p>
@@ -368,13 +374,13 @@ export default function LeadsClient() {
             return (
               <div
                 key={stage.key}
-                className="flex flex-col rounded-2xl bg-slate-900/60 border border-slate-800 p-3 min-w-[250px] space-y-3"
+                className="flex flex-col rounded-2xl bg-slate-50 border border-slate-200 p-3 min-w-[250px] space-y-3"
               >
                 <div className="flex items-center justify-between px-1">
                   <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${stage.color}`}>
                     {stage.label}
                   </span>
-                  <span className="text-xs font-bold text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-bold text-slate-600 bg-slate-200 px-2 py-0.5 rounded-full">
                     {stageLeads.length}
                   </span>
                 </div>
@@ -383,18 +389,19 @@ export default function LeadsClient() {
                   {stageLeads.map((lead) => (
                     <div
                       key={lead._id}
-                      className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 shadow-md transition space-y-2.5"
+                      className="p-3.5 rounded-xl bg-white border border-slate-200 hover:border-slate-300 shadow-xs transition space-y-2.5"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <p className="text-xs font-bold text-white leading-tight">{lead.name}</p>
+                          <p className="text-xs font-bold text-slate-900 leading-tight">{lead.name}</p>
                           <span
-                            className={`inline-block mt-1 text-[10px] px-2 py-0.5 rounded-md font-semibold uppercase ${lead.priority === "urgent"
-                                ? "bg-rose-500/20 text-rose-300"
+                            className={`inline-block mt-1 text-[10px] px-2 py-0.5 rounded-md font-semibold uppercase border ${
+                              lead.priority === "urgent"
+                                ? "bg-rose-50 text-rose-700 border-rose-200"
                                 : lead.priority === "high"
-                                  ? "bg-amber-500/20 text-amber-300"
-                                  : "bg-slate-800 text-slate-400"
-                              }`}
+                                ? "bg-amber-50 text-amber-700 border-amber-200"
+                                : "bg-slate-100 text-slate-600 border-slate-200"
+                            }`}
                           >
                             {lead.priority}
                           </span>
@@ -402,14 +409,14 @@ export default function LeadsClient() {
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => openEditModal(lead)}
-                            className="p-1 hover:text-sky-400 text-slate-400 transition"
+                            className="p-1 hover:text-blue-600 text-slate-400 transition"
                             title="Edit Lead"
                           >
                             <Edit2 className="h-3 w-3" />
                           </button>
                           <button
                             onClick={() => handleDelete(lead._id)}
-                            className="p-1 hover:text-rose-400 text-slate-400 transition"
+                            className="p-1 hover:text-rose-600 text-slate-400 transition"
                             title="Delete Lead"
                           >
                             <Trash2 className="h-3 w-3" />
@@ -417,29 +424,29 @@ export default function LeadsClient() {
                         </div>
                       </div>
 
-                      <div className="space-y-1 text-[11px] text-slate-400">
+                      <div className="space-y-1 text-[11px] text-slate-600">
                         <div className="flex items-center gap-1.5 truncate">
-                          <MapPin className="h-3 w-3 text-sky-400 shrink-0" />
-                          <span className="truncate text-slate-200">{lead.destination}</span>
+                          <MapPin className="h-3 w-3 text-blue-600 shrink-0" />
+                          <span className="truncate text-slate-800 font-medium">{lead.destination}</span>
                         </div>
                         <div className="flex items-center gap-1.5 truncate">
-                          <Phone className="h-3 w-3 text-emerald-400 shrink-0" />
+                          <Phone className="h-3 w-3 text-emerald-600 shrink-0" />
                           <span className="truncate">{lead.phone}</span>
                         </div>
                         {lead.budget && (
                           <div className="flex items-center gap-1.5">
-                            <DollarSign className="h-3 w-3 text-indigo-400 shrink-0" />
+                            <DollarSign className="h-3 w-3 text-indigo-600 shrink-0" />
                             <span>{formatCurrency(lead.budget)}</span>
                           </div>
                         )}
                       </div>
 
                       {/* Stage Mover Selector */}
-                      <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between gap-1">
+                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-1">
                         <select
                           value={lead.status}
                           onChange={(e) => handleStageChange(lead._id, e.target.value)}
-                          className="bg-slate-950 border border-slate-800 rounded-lg text-[10px] py-1 px-1.5 text-slate-300 focus:outline-none"
+                          className="bg-white border border-slate-300 rounded-lg text-[10px] py-1 px-1.5 text-slate-700 focus:outline-none"
                         >
                           <option value="new">New</option>
                           <option value="contacted">Contacted</option>
@@ -452,7 +459,7 @@ export default function LeadsClient() {
                         {lead.status !== "converted" && (
                           <button
                             onClick={() => handleConvertToCustomer(lead._id)}
-                            className="text-[10px] px-2 py-1 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 font-medium transition"
+                            className="text-[10px] px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-medium transition"
                             title="Convert to Customer"
                           >
                             Convert
@@ -468,10 +475,10 @@ export default function LeadsClient() {
         </div>
       ) : (
         /* Table View */
-        <div className="overflow-x-auto rounded-2xl bg-slate-900 border border-slate-800">
+        <div className="overflow-x-auto rounded-2xl bg-white border border-slate-200 shadow-xs">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-slate-800 bg-slate-950/60 text-slate-400 font-semibold">
+              <tr className="border-b border-slate-200 bg-slate-50 text-slate-700 font-semibold">
                 <th className="p-3.5">Lead Name</th>
                 <th className="p-3.5">Contact</th>
                 <th className="p-3.5">Destination</th>
@@ -482,36 +489,37 @@ export default function LeadsClient() {
                 <th className="p-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-slate-100">
               {leads.map((lead) => (
-                <tr key={lead._id} className="hover:bg-slate-800/40 transition">
-                  <td className="p-3.5 font-bold text-white">
+                <tr key={lead._id} className="hover:bg-slate-50/70 transition">
+                  <td className="p-3.5 font-bold text-slate-900">
                     {lead.name}
-                    <span className="block text-[10px] font-normal text-slate-400">
+                    <span className="block text-[10px] font-normal text-slate-500">
                       Added {formatDate(lead.createdAt)}
                     </span>
                   </td>
-                  <td className="p-3.5 text-slate-300">
+                  <td className="p-3.5 text-slate-700">
                     <div>{lead.email}</div>
-                    <div className="text-slate-400 text-[11px]">{lead.phone}</div>
+                    <div className="text-slate-500 text-[11px]">{lead.phone}</div>
                   </td>
-                  <td className="p-3.5 text-sky-400 font-medium">{lead.destination}</td>
-                  <td className="p-3.5 text-slate-300">{lead.travellersCount} Guests</td>
-                  <td className="p-3.5 text-slate-300">{lead.budget ? formatCurrency(lead.budget) : "N/A"}</td>
+                  <td className="p-3.5 text-blue-600 font-medium">{lead.destination}</td>
+                  <td className="p-3.5 text-slate-700">{lead.travellersCount} Guests</td>
+                  <td className="p-3.5 text-slate-700">{lead.budget ? formatCurrency(lead.budget) : "N/A"}</td>
                   <td className="p-3.5">
                     <span
-                      className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase ${lead.priority === "urgent"
-                          ? "bg-rose-500/20 text-rose-300"
+                      className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase border ${
+                        lead.priority === "urgent"
+                          ? "bg-rose-50 text-rose-700 border-rose-200"
                           : lead.priority === "high"
-                            ? "bg-amber-500/20 text-amber-300"
-                            : "bg-slate-800 text-slate-300"
-                        }`}
+                          ? "bg-amber-50 text-amber-700 border-amber-200"
+                          : "bg-slate-100 text-slate-700 border-slate-200"
+                      }`}
                     >
                       {lead.priority}
                     </span>
                   </td>
                   <td className="p-3.5">
-                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 capitalize">
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 capitalize">
                       {lead.status.replace("_", " ")}
                     </span>
                   </td>
@@ -519,7 +527,7 @@ export default function LeadsClient() {
                     {lead.status !== "converted" && (
                       <button
                         onClick={() => handleConvertToCustomer(lead._id)}
-                        className="p-1.5 text-emerald-400 hover:bg-emerald-950/40 rounded-lg transition"
+                        className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition"
                         title="Convert to Customer"
                       >
                         <UserCheck className="h-4 w-4" />
@@ -527,14 +535,14 @@ export default function LeadsClient() {
                     )}
                     <button
                       onClick={() => openEditModal(lead)}
-                      className="p-1.5 text-sky-400 hover:bg-sky-950/40 rounded-lg transition"
+                      className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition"
                       title="Edit Lead"
                     >
                       <Edit2 className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(lead._id)}
-                      className="p-1.5 text-rose-400 hover:bg-rose-950/40 rounded-lg transition"
+                      className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition"
                       title="Delete Lead"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -549,10 +557,10 @@ export default function LeadsClient() {
 
       {/* Add / Edit Lead Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-xl rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden">
-            <div className="p-6 border-b border-slate-800 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-xl rounded-3xl bg-white border border-slate-200 shadow-2xl overflow-hidden">
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-slate-900">
                 {editingLead ? "Edit Travel Inquiry" : "Register New Lead"}
               </h2>
               <button
@@ -560,7 +568,7 @@ export default function LeadsClient() {
                   setShowAddModal(false);
                   setEditingLead(null);
                 }}
-                className="text-slate-400 hover:text-white"
+                className="text-slate-400 hover:text-slate-600 text-xl font-bold"
               >
                 &times;
               </button>
@@ -569,94 +577,94 @@ export default function LeadsClient() {
             <form onSubmit={handleCreateOrUpdate} className="p-6 space-y-4 text-xs">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-400 mb-1">Full Name *</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Full Name *</label>
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                     placeholder="e.g. Rahul Sharma"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Email Address *</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Email Address *</label>
                   <input
                     type="email"
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                     placeholder="e.g. rahul@example.com"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Phone Number *</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Phone Number *</label>
                   <input
                     type="tel"
                     required
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                     placeholder="e.g. +91 9876543210"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">WhatsApp Number</label>
+                  <label className="block text-slate-700 font-semibold mb-1">WhatsApp Number</label>
                   <input
                     type="tel"
                     value={formData.whatsapp}
                     onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                     placeholder="+91..."
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Destination *</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Destination *</label>
                   <input
                     type="text"
                     required
                     value={formData.destination}
                     onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                     placeholder="e.g. Manali, Ladakh, Spiti"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Estimated Travel Date</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Estimated Travel Date</label>
                   <input
                     type="date"
                     value={formData.travelDate}
                     onChange={(e) => setFormData({ ...formData, travelDate: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Number of Travellers</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Number of Travellers</label>
                   <input
                     type="number"
                     min="1"
                     value={formData.travellersCount}
                     onChange={(e) => setFormData({ ...formData, travellersCount: Number(e.target.value) })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Budget (INR)</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Budget (INR)</label>
                   <input
                     type="number"
                     value={formData.budget}
                     onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                     placeholder="e.g. 50000"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Lead Source</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Lead Source</label>
                   <select
                     value={formData.leadSource}
                     onChange={(e) => setFormData({ ...formData, leadSource: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                   >
                     <option value="website">Website</option>
                     <option value="whatsapp">WhatsApp</option>
@@ -668,11 +676,11 @@ export default function LeadsClient() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Priority</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Priority</label>
                   <select
                     value={formData.priority}
                     onChange={(e) => setFormData({ ...formData, priority: e.target.value as any })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                   >
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
@@ -683,30 +691,30 @@ export default function LeadsClient() {
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1">Notes & Client Preferences</label>
+                <label className="block text-slate-700 font-semibold mb-1">Notes & Client Preferences</label>
                 <textarea
                   rows={3}
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   placeholder="e.g. Looking for 4-star hotels, vegetarian food preferred..."
-                  className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                  className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                 />
               </div>
 
-              <div className="pt-4 border-t border-slate-800 flex justify-end gap-3">
+              <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => {
                     setShowAddModal(false);
                     setEditingLead(null);
                   }}
-                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold transition"
+                  className="px-4 py-2 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold shadow-lg shadow-sky-500/20 transition"
+                  className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-xs transition"
                 >
                   {editingLead ? "Save Changes" : "Create Lead"}
                 </button>

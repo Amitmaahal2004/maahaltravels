@@ -211,22 +211,21 @@ export default function CrmSidebar({ user }: CrmSidebarProps) {
 
   return (
     <aside
-      className={`relative z-20 flex flex-col bg-slate-900 border-r border-slate-800 transition-all duration-300 text-slate-200 select-none ${
-        collapsed ? "w-20" : "w-64"
-      }`}
+      className={`relative z-20 flex flex-col bg-white border-r border-slate-200 transition-all duration-300 text-slate-700 select-none shadow-sm ${collapsed ? "w-20" : "w-64"
+        }`}
     >
       {/* Brand Header */}
-      <div className="h-16 flex items-center justify-between px-4 border-b border-slate-800 shrink-0">
+      <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200 shrink-0">
         <Link href="/crm/dashboard" className="flex items-center gap-3 overflow-hidden">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center shrink-0 shadow-md shadow-sky-500/20">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shrink-0 shadow-md shadow-blue-500/20">
             <Compass className="h-6 w-6 text-white" />
           </div>
           {!collapsed && (
             <div className="truncate">
-              <span className="font-bold text-white text-base tracking-tight block">
-                Himalayan Vistas
+              <span className="font-bold text-slate-900 text-base tracking-tight block">
+                Explore My Packages
               </span>
-              <span className="text-[10px] text-sky-400 font-medium tracking-wide uppercase block">
+              <span className="text-[10px] text-blue-600 font-semibold tracking-wide uppercase block">
                 Travel OS Enterprise
               </span>
             </div>
@@ -234,7 +233,7 @@ export default function CrmSidebar({ user }: CrmSidebarProps) {
         </Link>
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition shrink-0"
+          className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition shrink-0"
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
@@ -242,7 +241,7 @@ export default function CrmSidebar({ user }: CrmSidebarProps) {
       </div>
 
       {/* Nav List */}
-      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6 scrollbar-thin scrollbar-thumb-slate-800">
+      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6 scrollbar-thin scrollbar-thumb-slate-200">
         {navGroups.map((group, gIdx) => {
           const visibleItems = group.items.filter((i) => i.visible);
           if (visibleItems.length === 0) return null;
@@ -250,7 +249,7 @@ export default function CrmSidebar({ user }: CrmSidebarProps) {
           return (
             <div key={gIdx} className="space-y-1">
               {!collapsed && (
-                <div className="px-3 text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                <div className="px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
                   {group.title}
                 </div>
               )}
@@ -262,14 +261,13 @@ export default function CrmSidebar({ user }: CrmSidebarProps) {
                   <Link
                     key={iIdx}
                     href={item.href}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition ${
-                      isActive
-                        ? "bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-md shadow-sky-500/20"
-                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60"
-                    } ${collapsed ? "justify-center px-0" : ""}`}
+                    className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition ${isActive
+                        ? "bg-blue-50 text-blue-600 font-semibold border border-blue-100 shadow-xs"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
+                      } ${collapsed ? "justify-center px-0" : ""}`}
                     title={collapsed ? item.label : undefined}
                   >
-                    <Icon className="h-4 w-4 shrink-0" />
+                    <Icon className={`h-4 w-4 shrink-0 ${isActive ? "text-blue-600" : "text-slate-500"}`} />
                     {!collapsed && <span className="truncate">{item.label}</span>}
                   </Link>
                 );
@@ -280,20 +278,20 @@ export default function CrmSidebar({ user }: CrmSidebarProps) {
       </div>
 
       {/* User Info Capsule */}
-      <div className="p-3 border-t border-slate-800 shrink-0 bg-slate-950/40">
+      <div className="p-3 border-t border-slate-200 shrink-0 bg-slate-50/80">
         <div className={`flex items-center gap-3 ${collapsed ? "justify-center" : ""}`}>
-          <div className="h-9 w-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-sky-400 text-xs shrink-0">
+          <div className="h-9 w-9 rounded-xl bg-blue-100 border border-blue-200 flex items-center justify-center font-bold text-blue-700 text-xs shrink-0">
             {user.name.charAt(0).toUpperCase()}
           </div>
           {!collapsed && (
             <div className="truncate flex-1 min-w-0">
-              <p className="text-xs font-semibold text-white truncate">{user.name}</p>
+              <p className="text-xs font-semibold text-slate-900 truncate">{user.name}</p>
               <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="text-[10px] text-sky-400 truncate bg-sky-950/80 px-1.5 py-0.5 rounded border border-sky-800/50">
+                <span className="text-[10px] text-blue-700 truncate bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200 font-medium">
                   {user.role.name}
                 </span>
                 {user.department && (
-                  <span className="text-[10px] text-slate-400 truncate">
+                  <span className="text-[10px] text-slate-500 truncate">
                     • {user.department.code}
                   </span>
                 )}

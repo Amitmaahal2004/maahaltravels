@@ -235,22 +235,22 @@ export default function EmployeesClient() {
   return (
     <div className="space-y-6 animate-fadeIn pb-12">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl bg-white border border-slate-200 shadow-xs">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-sky-500/10 text-sky-400">
+            <span className="p-2 rounded-xl bg-blue-50 text-blue-600">
               <Users className="h-5 w-5" />
             </span>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Staff & Employee Directory</h1>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Staff & Employee Directory</h1>
           </div>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-slate-500">
             Manage agency personnel, designations, salary records, and department attachments with live Atlas sync.
           </p>
         </div>
 
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-sky-500/20 transition self-start md:self-auto"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition self-start md:self-auto"
         >
           <Plus className="h-4 w-4" />
           Add New Employee
@@ -259,21 +259,21 @@ export default function EmployeesClient() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
-          <p className="text-xs text-slate-400">Total Staff Registered</p>
-          <p className="text-2xl font-bold text-white mt-1">{summary.totalStaff}</p>
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <p className="text-xs text-slate-500 font-medium">Total Staff Registered</p>
+          <p className="text-2xl font-bold text-slate-900 mt-1">{summary.totalStaff}</p>
         </div>
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
-          <p className="text-xs text-slate-400">Active Operators & Admins</p>
-          <p className="text-2xl font-bold text-emerald-400 mt-1">{summary.activeStaff}</p>
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <p className="text-xs text-slate-500 font-medium">Active Operators & Admins</p>
+          <p className="text-2xl font-bold text-emerald-600 mt-1">{summary.activeStaff}</p>
         </div>
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
-          <p className="text-xs text-slate-400">Departments Active in Atlas</p>
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <p className="text-xs text-slate-500 font-medium">Departments Active in Atlas</p>
           <div className="flex items-center justify-between mt-1">
-            <p className="text-2xl font-bold text-indigo-400">{departments.filter((d) => d.isActive).length}</p>
+            <p className="text-2xl font-bold text-blue-600">{departments.filter((d) => d.isActive).length}</p>
             <Link
               href="/crm/departments"
-              className="text-[11px] text-sky-400 hover:text-sky-300 flex items-center gap-1 font-medium"
+              className="text-[11px] text-blue-600 hover:text-blue-700 flex items-center gap-1 font-medium"
             >
               Manage <ExternalLink className="h-3 w-3" />
             </Link>
@@ -282,7 +282,7 @@ export default function EmployeesClient() {
       </div>
 
       {/* Search and Filters */}
-      <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900 border border-slate-800">
+      <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
         <div className="relative flex-1 min-w-[240px]">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input
@@ -290,7 +290,7 @@ export default function EmployeesClient() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search staff by name, email, or phone..."
-            className="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500"
+            className="w-full pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
           />
         </div>
 
@@ -299,7 +299,7 @@ export default function EmployeesClient() {
           <select
             value={deptFilter}
             onChange={(e) => setDeptFilter(e.target.value)}
-            className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-sky-500"
+            className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-blue-600 shadow-xs"
           >
             <option value="all">All Departments</option>
             {departments.map((d) => (
@@ -313,7 +313,7 @@ export default function EmployeesClient() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-sky-500"
+            className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-blue-600 shadow-xs"
           >
             <option value="all">All Statuses</option>
             <option value="active">Active</option>
@@ -325,7 +325,7 @@ export default function EmployeesClient() {
               fetchEmployees();
               fetchDepartments();
             }}
-            className="p-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition"
+            className="p-2 rounded-xl bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 border border-slate-300 shadow-xs transition"
             title="Refresh Staff & Departments"
           >
             <RefreshCw className="h-4 w-4" />
@@ -335,23 +335,23 @@ export default function EmployeesClient() {
 
       {/* Staff Table */}
       {loading ? (
-        <div className="p-12 text-center text-slate-400 flex flex-col items-center gap-3">
-          <div className="h-8 w-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
+        <div className="p-12 text-center text-slate-500 flex flex-col items-center gap-3">
+          <div className="h-8 w-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
           <span className="text-xs">Loading Personnel from MongoDB Atlas...</span>
         </div>
       ) : filteredEmployees.length === 0 ? (
-        <div className="p-12 text-center bg-slate-900 border border-slate-800 rounded-3xl space-y-3">
-          <Users className="h-10 w-10 text-slate-600 mx-auto" />
-          <p className="text-sm font-semibold text-slate-300">No employees found matching criteria</p>
+        <div className="p-12 text-center bg-white border border-slate-200 rounded-2xl shadow-xs space-y-3">
+          <Users className="h-10 w-10 text-slate-400 mx-auto" />
+          <p className="text-sm font-semibold text-slate-800">No employees found matching criteria</p>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
             Add team members to grant login credentials and operational roles.
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-2xl bg-slate-900 border border-slate-800">
+        <div className="overflow-x-auto rounded-2xl bg-white border border-slate-200 shadow-xs">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-slate-800 bg-slate-950/60 text-slate-400 font-semibold">
+              <tr className="border-b border-slate-200 bg-slate-50 text-slate-700 font-semibold">
                 <th className="p-3.5">Employee</th>
                 <th className="p-3.5">Staff ID</th>
                 <th className="p-3.5">Designation</th>
@@ -362,39 +362,39 @@ export default function EmployeesClient() {
                 <th className="p-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-slate-100">
               {filteredEmployees.map((emp) => (
-                <tr key={emp._id} className="hover:bg-slate-800/40 transition">
+                <tr key={emp._id} className="hover:bg-slate-50/70 transition">
                   <td className="p-3.5">
-                    <p className="font-bold text-white">{emp.name}</p>
-                    <p className="text-[10px] text-slate-400">{emp.email}</p>
+                    <p className="font-bold text-slate-900">{emp.name}</p>
+                    <p className="text-[10px] text-slate-500">{emp.email}</p>
                   </td>
-                  <td className="p-3.5 font-mono text-sky-400">{emp.employeeId}</td>
-                  <td className="p-3.5 text-slate-200">{emp.designation}</td>
-                  <td className="p-3.5 text-slate-300">
+                  <td className="p-3.5 font-mono text-blue-600 font-medium">{emp.employeeId}</td>
+                  <td className="p-3.5 text-slate-700">{emp.designation}</td>
+                  <td className="p-3.5 text-slate-700">
                     {emp.department ? (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-slate-950 border border-slate-800 text-sky-300 font-medium">
-                        <Building className="h-3 w-3 text-sky-400" />
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-blue-50 border border-blue-200 text-blue-700 font-medium">
+                        <Building className="h-3 w-3 text-blue-600" />
                         {emp.department.name} ({emp.department.code})
                       </span>
                     ) : (
-                      <span className="text-slate-500 italic">Unassigned</span>
+                      <span className="text-slate-400 italic">Unassigned</span>
                     )}
                   </td>
                   <td className="p-3.5">
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 font-medium">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 font-medium">
                       {emp.role?.name || "Employee"}
                     </span>
                   </td>
-                  <td className="p-3.5 font-medium text-emerald-400">
+                  <td className="p-3.5 font-medium text-emerald-600">
                     {formatCurrency(emp.salary?.basic || 35000)}
                   </td>
                   <td className="p-3.5">
                     <span
                       className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase ${
                         emp.status === "active"
-                          ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                          : "bg-rose-500/20 text-rose-400 border border-rose-500/30"
+                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                          : "bg-rose-50 text-rose-700 border border-rose-200"
                       }`}
                     >
                       {emp.status}
@@ -403,14 +403,14 @@ export default function EmployeesClient() {
                   <td className="p-3.5 text-right space-x-2">
                     <button
                       onClick={() => openEdit(emp)}
-                      className="p-1.5 text-sky-400 hover:bg-sky-950/50 rounded-lg transition"
+                      className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition"
                       title="Edit Profile"
                     >
                       <Edit2 className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(emp._id)}
-                      className="p-1.5 text-rose-400 hover:bg-rose-950/50 rounded-lg transition"
+                      className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition"
                       title="Delete User"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -425,14 +425,14 @@ export default function EmployeesClient() {
 
       {/* Add / Edit Employee Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-xl rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
-            <div className="p-6 border-b border-slate-800 flex items-center justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-xl rounded-2xl bg-white border border-slate-200 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+            <div className="p-6 border-b border-slate-200 flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-bold text-white">
+                <h2 className="text-lg font-bold text-slate-900">
                   {editingEmp ? "Edit Staff Details" : "Register Team Member"}
                 </h2>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500">
                   {editingEmp ? `Editing profile of ${editingEmp.name}` : "Create credentials and assign to department"}
                 </p>
               </div>
@@ -441,7 +441,7 @@ export default function EmployeesClient() {
                   setShowAddModal(false);
                   setEditingEmp(null);
                 }}
-                className="text-slate-400 hover:text-white"
+                className="text-slate-400 hover:text-slate-600 text-lg"
               >
                 &times;
               </button>
@@ -450,57 +450,57 @@ export default function EmployeesClient() {
             <form onSubmit={handleSave} className="p-6 space-y-4 overflow-y-auto flex-1 text-xs">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-400 mb-1">Full Name *</label>
+                  <label className="block text-slate-700 font-medium mb-1">Full Name *</label>
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                     placeholder="e.g. Priya Sharma"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Work Email *</label>
+                  <label className="block text-slate-700 font-medium mb-1">Work Email *</label>
                   <input
                     type="email"
                     required
                     disabled={Boolean(editingEmp)}
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white disabled:opacity-50 focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 disabled:opacity-50 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                     placeholder="e.g. priya@travelagency.com"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Phone Number</label>
+                  <label className="block text-slate-700 font-medium mb-1">Phone Number</label>
                   <input
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                     placeholder="+91 98765 43210"
                   />
                 </div>
                 {!editingEmp && (
                   <div>
-                    <label className="block text-slate-400 mb-1">Initial Password *</label>
+                    <label className="block text-slate-700 font-medium mb-1">Initial Password *</label>
                     <input
                       type="password"
                       required
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                      className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                     />
                   </div>
                 )}
                 <div>
-                  <label className="block text-slate-400 mb-1">Designation</label>
+                  <label className="block text-slate-700 font-medium mb-1">Designation</label>
                   <input
                     type="text"
                     value={formData.designation}
                     onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                     placeholder="e.g. Senior Tour Specialist"
                   />
                 </div>
@@ -508,21 +508,21 @@ export default function EmployeesClient() {
                 {/* Dynamic Department Dropdown */}
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <label className="block text-slate-400">Department</label>
+                    <label className="block text-slate-700 font-medium">Department</label>
                     {departmentsLoading && (
-                      <span className="text-[10px] text-sky-400 flex items-center gap-1">
+                      <span className="text-[10px] text-blue-600 flex items-center gap-1 font-medium">
                         <Loader2 className="h-3 w-3 animate-spin" /> Fetching...
                       </span>
                     )}
                   </div>
 
                   {departmentsError ? (
-                    <div className="p-2 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-[11px] flex items-center justify-between">
+                    <div className="p-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-[11px] flex items-center justify-between">
                       <span>{departmentsError}</span>
                       <button
                         type="button"
                         onClick={fetchDepartments}
-                        className="text-sky-400 hover:underline flex items-center gap-1 font-semibold"
+                        className="text-blue-600 hover:underline flex items-center gap-1 font-semibold"
                       >
                         <RefreshCw className="h-3 w-3" /> Retry
                       </button>
@@ -531,12 +531,11 @@ export default function EmployeesClient() {
                     <select
                       value={formData.departmentId}
                       onChange={(e) => setFormData({ ...formData, departmentId: e.target.value })}
-                      className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                      className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                       disabled={departmentsLoading}
                     >
                       <option value="">Select Department...</option>
                       {departments.map((d) => {
-                        // Allow selecting if active OR if it is the employee's currently assigned historical department
                         const isCurrentAssigned = editingEmp && formData.departmentId === d._id;
                         const isSelectable = d.isActive || isCurrentAssigned;
 
@@ -545,7 +544,7 @@ export default function EmployeesClient() {
                             key={d._id}
                             value={d._id}
                             disabled={!isSelectable}
-                            className={!d.isActive ? "text-slate-500 bg-slate-900" : "text-white bg-slate-950"}
+                            className={!d.isActive ? "text-slate-400 bg-slate-50" : "text-slate-900 bg-white"}
                           >
                             {d.name} ({d.code}) {!d.isActive ? "(Inactive)" : ""}
                           </option>
@@ -555,11 +554,11 @@ export default function EmployeesClient() {
                   )}
 
                   {!departmentsLoading && departments.length === 0 && !departmentsError && (
-                    <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[11px] flex items-center justify-between mt-1">
+                    <div className="p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[11px] flex items-center justify-between mt-1">
                       <span>No departments exist in MongoDB.</span>
                       <Link
                         href="/crm/departments"
-                        className="text-sky-400 hover:underline font-semibold flex items-center gap-1"
+                        className="text-blue-600 hover:underline font-semibold flex items-center gap-1"
                         target="_blank"
                       >
                         Create One <ExternalLink className="h-3 w-3" />
@@ -569,20 +568,20 @@ export default function EmployeesClient() {
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 mb-1">Basic Monthly Salary (₹)</label>
+                  <label className="block text-slate-700 font-medium mb-1">Basic Monthly Salary (₹)</label>
                   <input
                     type="number"
                     value={formData.basicSalary}
                     onChange={(e) => setFormData({ ...formData, basicSalary: Number(e.target.value) })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Employment Type</label>
+                  <label className="block text-slate-700 font-medium mb-1">Employment Type</label>
                   <select
                     value={formData.employmentType}
                     onChange={(e) => setFormData({ ...formData, employmentType: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                   >
                     <option value="full_time">Full Time</option>
                     <option value="part_time">Part Time</option>
@@ -593,11 +592,11 @@ export default function EmployeesClient() {
 
                 {editingEmp && (
                   <div>
-                    <label className="block text-slate-400 mb-1">Account Status</label>
+                    <label className="block text-slate-700 font-medium mb-1">Account Status</label>
                     <select
                       value={formData.status}
                       onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                      className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                      className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 shadow-xs"
                     >
                       <option value="active">Active</option>
                       <option value="inactive">Inactive</option>
@@ -607,18 +606,18 @@ export default function EmployeesClient() {
                 )}
               </div>
 
-              <div className="pt-4 border-t border-slate-800 flex justify-end gap-3">
+              <div className="pt-4 border-t border-slate-200 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold transition"
+                  className="px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 font-semibold hover:bg-slate-50 transition shadow-xs"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold shadow-lg shadow-sky-500/20 disabled:opacity-50 transition"
+                  className="flex items-center gap-2 px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-xs disabled:opacity-50 transition"
                 >
                   {submitting && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                   {editingEmp ? "Save Changes" : "Save Employee"}

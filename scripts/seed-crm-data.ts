@@ -994,7 +994,7 @@ export async function seedCrmData() {
       key: "agency_about",
       title: "Over 15 Years of Alpine Excellence",
       subtitle: "Locally rooted, internationally celebrated travel creators.",
-      content: "Himalayan Vistas was founded with a singular purpose: to deliver deeply authentic, safe, and breathtaking travel experiences across India's most majestic mountain frontiers.",
+      content: "Explore My Packages was founded with a singular purpose: to deliver deeply authentic, safe, and breathtaking travel experiences across India's most majestic mountain frontiers.",
       images: ["/images/about-mountains.jpg"],
       metadata: {
         foundedYear: "2011",

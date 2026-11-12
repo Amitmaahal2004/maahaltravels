@@ -133,7 +133,7 @@ Enterprise-grade Travel Agency Management CRM & Public Travel Website built with
   - Vendor and supplier accounts with outstanding balances.
   - Employee sales commission calculation & approvals.
 - [ ] **Phase 7 — Public Travel Website & CMS**:
-  - Luxury public travel agency website (Himalayan Vistas).
+  - Luxury public travel agency website (Explore My Packages).
   - Tour packages showcase, destination guides, blogs, travel gallery.
   - Booking inquiry form and contact form connected directly to CRM leads.
   - Admin CMS interface to publish/draft/unpublish packages and content without code changes.

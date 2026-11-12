@@ -221,18 +221,18 @@ export default function RolesManagementClient({
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-            <ShieldCheck className="h-7 w-7 text-sky-400" />
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
+            <ShieldCheck className="h-7 w-7 text-blue-600" />
             Dynamic Roles & Permission Matrix
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 mt-1">
             Enterprise RBAC with module-level action toggles and record-scoping (own, assigned, department, all).
           </p>
         </div>
 
         <button
           onClick={() => setShowCreateModal(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-sky-500/20 transition self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition self-start sm:self-auto"
         >
           <Plus className="h-4 w-4" />
           Create Custom Role
@@ -243,14 +243,14 @@ export default function RolesManagementClient({
         <div
           className={`p-4 rounded-2xl text-xs flex items-center gap-3 animate-fadeIn ${
             statusMessage.type === "success"
-              ? "bg-emerald-950/70 border border-emerald-800 text-emerald-200"
-              : "bg-rose-950/70 border border-rose-800 text-rose-200"
+              ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
+              : "bg-rose-50 border border-rose-200 text-rose-800"
           }`}
         >
           {statusMessage.type === "success" ? (
-            <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
+            <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
           ) : (
-            <AlertCircle className="h-5 w-5 text-rose-400 shrink-0" />
+            <AlertCircle className="h-5 w-5 text-rose-600 shrink-0" />
           )}
           <span>{statusMessage.text}</span>
         </div>
@@ -260,7 +260,7 @@ export default function RolesManagementClient({
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Roles Selector Sidebar */}
         <div className="lg:col-span-1 space-y-3">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-3 shadow-sm space-y-1">
+          <div className="bg-white border border-slate-200 rounded-2xl p-3 shadow-xs space-y-1">
             <div className="px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
               System & Custom Roles ({roles.length})
             </div>
@@ -272,8 +272,8 @@ export default function RolesManagementClient({
                   onClick={() => setSelectedRoleId(r.id)}
                   className={`w-full text-left p-3 rounded-xl transition flex flex-col gap-1 ${
                     isSelected
-                      ? "bg-sky-500/10 border border-sky-500/30 text-white"
-                      : "hover:bg-slate-800/70 text-slate-300"
+                      ? "bg-blue-50 border border-blue-200 text-blue-900 font-medium shadow-xs"
+                      : "hover:bg-slate-50 text-slate-700"
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -281,8 +281,8 @@ export default function RolesManagementClient({
                     <span
                       className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${
                         r.isSystem
-                          ? "bg-slate-800 text-slate-400"
-                          : "bg-indigo-950 text-indigo-300 border border-indigo-800/50"
+                          ? "bg-slate-100 text-slate-600"
+                          : "bg-blue-50 text-blue-700 border border-blue-200"
                       }`}
                     >
                       {r.isSystem ? "System" : "Custom"}
@@ -301,20 +301,20 @@ export default function RolesManagementClient({
         {/* Permission Grid for Selected Role */}
         <div className="lg:col-span-3 space-y-4">
           {selectedRole ? (
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-sm space-y-6">
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-6">
               {/* Role Header & Controls */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-xl font-bold text-white">{selectedRole.name}</h2>
+                    <h2 className="text-xl font-bold text-slate-900">{selectedRole.name}</h2>
                     {selectedRole.slug === "super-admin" && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200 flex items-center gap-1">
                         <Lock className="h-3 w-3" />
                         Unrestricted System Super Admin
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-400 mt-1 max-w-xl">
+                  <p className="text-xs text-slate-500 mt-1 max-w-xl">
                     {selectedRole.description || "Manage permissions and records scope for this role."}
                   </p>
                 </div>
@@ -323,7 +323,7 @@ export default function RolesManagementClient({
                   {!selectedRole.isSystem && (
                     <button
                       onClick={() => handleDeleteRole(selectedRole.id, selectedRole.name)}
-                      className="p-2.5 rounded-xl border border-rose-800/60 bg-rose-950/40 text-rose-300 hover:bg-rose-900/50 text-xs font-semibold transition"
+                      className="p-2.5 rounded-xl border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 text-xs font-semibold transition"
                       title="Delete custom role"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -334,7 +334,7 @@ export default function RolesManagementClient({
                     <button
                       onClick={handleSaveRole}
                       disabled={isSaving}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-sky-500/20 disabled:opacity-60 transition"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs disabled:opacity-60 transition"
                     >
                       {isSaving ? (
                         <>
@@ -353,10 +353,10 @@ export default function RolesManagementClient({
               </div>
 
               {/* Record Scope Configuration */}
-              <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <span className="text-xs font-semibold text-white block">Default Record Access Scope</span>
-                  <span className="text-[11px] text-slate-400 block mt-0.5">
+                  <span className="text-xs font-semibold text-slate-900 block">Default Record Access Scope</span>
+                  <span className="text-[11px] text-slate-500 block mt-0.5">
                     Governs which records this role can view/edit when permissions are active.
                   </span>
                 </div>
@@ -365,7 +365,7 @@ export default function RolesManagementClient({
                   disabled={selectedRole.slug === "super-admin"}
                   value={activeScope}
                   onChange={(e) => setActiveScope(e.target.value as RecordScope)}
-                  className="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white focus:outline-none focus:ring-2 focus:ring-sky-500 disabled:opacity-50"
+                  className="px-3 py-2 rounded-xl bg-white border border-slate-300 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 disabled:opacity-50 shadow-xs"
                 >
                   <option value="all">All Records (Agency-Wide)</option>
                   <option value="department">Department Records Only</option>
@@ -375,9 +375,9 @@ export default function RolesManagementClient({
               </div>
 
               {/* Matrix Table */}
-              <div className="overflow-x-auto rounded-2xl border border-slate-800">
+              <div className="overflow-x-auto rounded-2xl border border-slate-200">
                 <table className="w-full text-left text-xs border-collapse">
-                  <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+                  <thead className="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200">
                     <tr>
                       <th className="py-3 px-4 font-semibold min-w-[180px]">System Module</th>
                       {PERMISSION_ACTIONS.map((action) => (
@@ -387,27 +387,27 @@ export default function RolesManagementClient({
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/60">
+                  <tbody className="divide-y divide-slate-100">
                     {SYSTEM_MODULES.map((mod) => {
                       const isSuper = selectedRole.slug === "super-admin";
 
                       return (
-                        <tr key={mod.id} className="hover:bg-slate-800/40 transition">
+                        <tr key={mod.id} className="hover:bg-slate-50/70 transition">
                           <td className="py-3 px-4">
                             <div className="flex items-center gap-2">
                               {!isSuper && (
                                 <button
                                   type="button"
                                   onClick={() => handleToggleModuleRow(mod.id)}
-                                  className="text-[10px] text-sky-400 hover:text-sky-300 font-mono underline"
+                                  className="text-[10px] text-blue-600 hover:text-blue-700 font-mono underline font-medium"
                                   title="Toggle entire row"
                                 >
                                   row
                                 </button>
                               )}
                               <div>
-                                <p className="font-semibold text-white">{mod.label}</p>
-                                <p className="text-[10px] text-slate-400 truncate max-w-xs">{mod.description}</p>
+                                <p className="font-semibold text-slate-900">{mod.label}</p>
+                                <p className="text-[10px] text-slate-500 truncate max-w-xs">{mod.description}</p>
                               </div>
                             </div>
                           </td>
@@ -423,7 +423,7 @@ export default function RolesManagementClient({
                                   disabled={isSuper}
                                   checked={isChecked}
                                   onChange={() => handleTogglePermission(mod.id, action)}
-                                  className="h-4 w-4 rounded bg-slate-950 border-slate-700 text-sky-500 focus:ring-sky-500/20 focus:ring-offset-0 cursor-pointer disabled:cursor-not-allowed"
+                                  className="h-4 w-4 rounded bg-white border-slate-300 text-blue-600 focus:ring-blue-500/20 cursor-pointer disabled:cursor-not-allowed"
                                 />
                               </td>
                             );
@@ -436,28 +436,28 @@ export default function RolesManagementClient({
               </div>
             </div>
           ) : (
-            <div className="p-12 text-center text-slate-500">No role selected.</div>
+            <div className="p-12 text-center text-slate-400">No role selected.</div>
           )}
         </div>
       </div>
 
       {/* Modal for Creating Custom Role */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5">
             <div>
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <Plus className="h-5 w-5 text-sky-400" />
+              <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <Plus className="h-5 w-5 text-blue-600" />
                 Create Custom Role
               </h3>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-slate-500 mt-1">
                 Define a dynamic role with custom permission matrix.
               </p>
             </div>
 
             <form onSubmit={handleCreateRole} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                   Role Name
                 </label>
                 <input
@@ -471,12 +471,12 @@ export default function RolesManagementClient({
                       setNewRoleSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]/g, "-"));
                     }
                   }}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 placeholder:text-slate-400 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none shadow-xs"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                   Role Slug (Identifier)
                 </label>
                 <input
@@ -485,12 +485,12 @@ export default function RolesManagementClient({
                   placeholder="senior-tour-specialist"
                   value={newRoleSlug}
                   onChange={(e) => setNewRoleSlug(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 text-xs font-mono focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 placeholder:text-slate-400 text-xs font-mono focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none shadow-xs"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                   Description
                 </label>
                 <textarea
@@ -498,18 +498,18 @@ export default function RolesManagementClient({
                   placeholder="Responsibilities and access scope..."
                   value={newRoleDesc}
                   onChange={(e) => setNewRoleDesc(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 placeholder:text-slate-400 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none shadow-xs"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                   Default Record Scope
                 </label>
                 <select
                   value={newRoleScope}
                   onChange={(e) => setNewRoleScope(e.target.value as RecordScope)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                  className="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-700 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none shadow-xs"
                 >
                   <option value="assigned">Assigned Records Only</option>
                   <option value="department">Department Records Only</option>
@@ -522,14 +522,14 @@ export default function RolesManagementClient({
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 rounded-xl text-xs text-slate-400 hover:text-white transition"
+                  className="px-4 py-2 rounded-xl text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isCreating}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-sky-500/20 disabled:opacity-60 transition flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs disabled:opacity-60 transition flex items-center gap-2"
                 >
                   {isCreating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
                   Create Role
