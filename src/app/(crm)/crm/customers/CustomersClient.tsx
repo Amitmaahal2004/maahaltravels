@@ -19,8 +19,10 @@ import {
   CheckCircle,
   Tag,
   Package,
+  Share2,
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import DirectShareBrochureModal from "@/components/crm/packages/DirectShareBrochureModal";
 
 interface CustomerItem {
   _id: string;
@@ -60,6 +62,7 @@ export default function CustomersClient() {
     customer: CustomerItem;
     bookings: any[];
   } | null>(null);
+  const [sharingCustomer, setSharingCustomer] = useState<{ name: string; phone: string } | null>(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -378,6 +381,13 @@ export default function CustomersClient() {
                       <Eye className="h-4 w-4" />
                     </button>
                     <button
+                      onClick={() => setSharingCustomer({ name: c.name, phone: c.phone || c.whatsapp || "" })}
+                      className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition"
+                      title="Share Tour Brochure on WhatsApp"
+                    >
+                      <Share2 className="h-4 w-4" />
+                    </button>
+                    <button
                       onClick={() => openEditModal(c)}
                       className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition"
                       title="Edit Customer"
@@ -647,6 +657,16 @@ export default function CustomersClient() {
             </form>
           </div>
         </div>
+      )}
+      {/* Direct WhatsApp Share Modal */}
+      {sharingCustomer && (
+        <DirectShareBrochureModal
+          isOpen={Boolean(sharingCustomer)}
+          onClose={() => setSharingCustomer(null)}
+          recipientName={sharingCustomer.name}
+          recipientPhone={sharingCustomer.phone}
+          sourceType="customer"
+        />
       )}
     </div>
   );

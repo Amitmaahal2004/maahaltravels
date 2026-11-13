@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth/guard";
+import { getCurrentUser, assertPermission } from "@/lib/auth/guard";
 import connectToDatabase from "@/lib/mongodb";
 import Quotation from "@/models/Quotation";
 import Booking from "@/models/Booking";
@@ -16,6 +16,9 @@ export async function GET(
     if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
+
+    const permError = assertPermission(user, "quotations", "view");
+    if (permError) return permError;
 
     await connectToDatabase();
 
@@ -44,6 +47,9 @@ export async function PUT(
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
+    const permError = assertPermission(user, "quotations", "edit");
+    if (permError) return permError;
+
     await connectToDatabase();
     const body = await req.json();
     const { action, ...updateData } = body;
@@ -59,6 +65,7 @@ export async function PUT(
       if (!customer) {
         customer = await Customer.findOne({ email: quotation.customerEmail.toLowerCase() });
       }
+
       if (!customer) {
         customer = await Customer.create({
           name: quotation.customerName,
@@ -67,63 +74,62 @@ export async function PUT(
           customerType: "individual",
           source: "website",
           status: "active",
-          tags: ["Converted from Quotation", quotation.destination],
-          totalSpent: quotation.totalAmount,
-          bookingsCount: 1,
+          tags: ["Quotation Conversion", quotation.destination],
+          notes: `Created during conversion of Quotation ${quotation.quotationNumber}`,
           assignedTo: user.id,
         });
-      } else {
-        customer.totalSpent = (customer.totalSpent || 0) + quotation.totalAmount;
-        customer.bookingsCount = (customer.bookingsCount || 0) + 1;
-        await customer.save();
       }
 
       const bookingCount = await Booking.countDocuments();
       const bookingRef = `BK-${new Date().getFullYear()}-${String(bookingCount + 1).padStart(4, "0")}`;
-      const depDate = quotation.departureDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-      const retDate = new Date(new Date(depDate).getTime() + (quotation.durationDays || 5) * 24 * 60 * 60 * 1000);
 
-      const newBooking = await Booking.create({
+      const depDate = quotation.departureDate ? new Date(quotation.departureDate) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      const days = quotation.durationDays || 5;
+      const retDate = new Date(depDate.getTime() + days * 24 * 60 * 60 * 1000);
+      const travellers = quotation.travellersCount || 2;
+
+      const booking = await Booking.create({
         bookingRef,
         customerId: customer._id,
-        customerName: quotation.customerName,
-        customerEmail: quotation.customerEmail,
-        customerPhone: quotation.customerPhone,
-        packageId: quotation.packageId || undefined,
+        customerName: customer.name,
+        customerEmail: customer.email,
+        customerPhone: customer.phone,
+        packageId: quotation.packageId,
         packageName: quotation.packageName,
         departureDate: depDate,
         returnDate: retDate,
-        adults: quotation.travellersCount || 2,
+        adults: travellers,
         children: 0,
         infants: 0,
-        travellersCount: quotation.travellersCount || 2,
+        travellersCount: travellers,
         travellers: [
           {
-            fullName: quotation.customerName,
+            fullName: customer.name,
             age: 30,
             gender: "other",
           },
         ],
-        bookingSource: "quotation",
+        bookingSource: "Quotation",
         totalAmount: quotation.totalAmount,
-        discount: quotation.discount || 0,
-        taxAmount: quotation.gstAmount || 0,
+        discount: 0,
+        taxAmount: 0,
         paidAmount: 0,
         balanceAmount: quotation.totalAmount,
         paymentStatus: "unpaid",
         bookingStatus: "confirmed",
-        specialRequirements: quotation.notes,
-        assignedStaff: user.id,
+        specialRequirements: `Converted from Quotation: ${quotation.quotationNumber}. Notes: ${quotation.notes || "None"}`,
+        assignedStaff: user.id as any,
       });
 
       quotation.status = "accepted";
-      quotation.convertedBookingId = newBooking._id;
+      quotation.convertedBookingId = booking._id;
       await quotation.save();
 
       return NextResponse.json({
         success: true,
-        message: "Quotation successfully converted to booking",
-        booking: newBooking,
+        message: "Quotation converted to Booking successfully",
+        booking,
+        quotation,
       });
     }
 
@@ -152,6 +158,9 @@ export async function DELETE(
     if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
+
+    const permError = assertPermission(user, "quotations", "delete");
+    if (permError) return permError;
 
     await connectToDatabase();
 

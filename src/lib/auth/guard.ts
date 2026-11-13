@@ -16,7 +16,12 @@ export async function getCurrentUser(): Promise<SafeUser | null> {
     const session = await validateSessionToken(token);
     if (!session) return null;
 
-    const user = await User.findById(session.userId).populate("roleId").populate("departmentId");
+    const user = await User.findById(session.userId)
+      .populate({
+        path: "roleId",
+        populate: { path: "permissions" },
+      })
+      .populate("departmentId");
     if (!user || user.status !== "active") return null;
 
     return await serializeSafeUser(user);
@@ -47,6 +52,47 @@ export async function requirePermission(
   }
 
   return { user, scope: check.scope || "all" };
+}
+
+/**
+ * Server-side helper to check if current page visitor has required module permission.
+ * Does not throw unhandled exception; returns clean authorization status and user.
+ */
+export async function checkPageAccess(
+  module: SystemModuleId,
+  action: PermissionAction = "view",
+  record?: RecordContext
+): Promise<{ authorized: boolean; user: SafeUser; reason?: string }> {
+  const user = await requireAuth();
+  const check = checkUserPermission(user, module, action, record);
+  return {
+    authorized: check.granted,
+    user,
+    reason: check.reason,
+  };
+}
+
+/**
+ * Quick assertion helper for API route handlers.
+ * Returns a 403 NextResponse if forbidden, or null if authorized.
+ */
+export function assertPermission(
+  user: SafeUser,
+  module: SystemModuleId,
+  action: PermissionAction,
+  record?: RecordContext
+): NextResponse | null {
+  const check = checkUserPermission(user, module, action, record);
+  if (!check.granted) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: check.reason || `Forbidden: You lack the '${module}:${action}' permission.`,
+      },
+      { status: 403 }
+    );
+  }
+  return null;
 }
 
 /**
@@ -95,4 +141,3 @@ export function withPermission(
     return handler(req, user, check.scope || "all");
   };
 }
-

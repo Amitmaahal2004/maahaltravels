@@ -17,8 +17,10 @@ import {
   Printer,
   Sparkles,
   Plane,
+  Share2,
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import DirectShareBrochureModal from "@/components/crm/packages/DirectShareBrochureModal";
 
 interface LineItem {
   description: string;
@@ -63,6 +65,7 @@ export default function QuotationsClient() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [previewQuote, setPreviewQuote] = useState<QuotationItem | null>(null);
+  const [sharingQuotation, setSharingQuotation] = useState<{ name: string; phone: string } | null>(null);
 
   // Form builder state
   const [formData, setFormData] = useState({
@@ -346,6 +349,13 @@ export default function QuotationsClient() {
                     </span>
                   </td>
                   <td className="p-3.5 text-right space-x-2">
+                    <button
+                      onClick={() => setSharingQuotation({ name: q.customerName, phone: q.customerPhone || "" })}
+                      className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition"
+                      title="Share Package Brochure on WhatsApp"
+                    >
+                      <Share2 className="h-4 w-4" />
+                    </button>
                     <button
                       onClick={() => setPreviewQuote(q)}
                       className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition"
@@ -676,6 +686,16 @@ export default function QuotationsClient() {
             </form>
           </div>
         </div>
+      )}
+      {/* Direct WhatsApp Share Modal */}
+      {sharingQuotation && (
+        <DirectShareBrochureModal
+          isOpen={Boolean(sharingQuotation)}
+          onClose={() => setSharingQuotation(null)}
+          recipientName={sharingQuotation.name}
+          recipientPhone={sharingQuotation.phone}
+          sourceType="quotation"
+        />
       )}
     </div>
   );

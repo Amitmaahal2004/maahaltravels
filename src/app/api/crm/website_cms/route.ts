@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth/guard";
+import { getCurrentUser, assertPermission } from "@/lib/auth/guard";
 import connectToDatabase from "@/lib/mongodb";
 import WebsiteContent from "@/models/WebsiteContent";
 
@@ -11,6 +11,9 @@ export async function GET() {
     if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
+
+    const permError = assertPermission(user, "website_cms", "view");
+    if (permError) return permError;
 
     await connectToDatabase();
 
@@ -36,6 +39,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
+    const permError = assertPermission(user, "website_cms", "edit");
+    if (permError) return permError;
+
     await connectToDatabase();
     const body = await req.json();
 
@@ -58,14 +64,14 @@ export async function POST(req: Request) {
         isPublished: Boolean(isPublished),
         updatedBy: user.id as any,
       },
-      { upsert: true, new: true }
+      { upsert: true, new: true, setDefaultsOnInsert: true }
     );
 
     return NextResponse.json({ success: true, data: item });
   } catch (error: any) {
     console.error("POST /api/crm/website_cms error:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to save content" },
+      { success: false, error: error.message || "Failed to save website content" },
       { status: 500 }
     );
   }

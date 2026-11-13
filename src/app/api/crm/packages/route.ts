@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth/guard";
+import { getCurrentUser, assertPermission } from "@/lib/auth/guard";
 import connectToDatabase from "@/lib/mongodb";
 import Package from "@/models/Package";
+import PackageDocument from "@/models/PackageDocument";
 
 export const dynamic = "force-dynamic";
 
@@ -12,12 +13,17 @@ export async function GET(req: Request) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
+    const permError = assertPermission(user, "packages", "view");
+    if (permError) return permError;
+
     await connectToDatabase();
 
     const { searchParams } = new URL(req.url);
     const search = searchParams.get("search") || "";
     const category = searchParams.get("category") || "";
     const status = searchParams.get("status") || "";
+    const brochureFilter = searchParams.get("brochures") || "all"; // "all" | "with" | "without"
+    const docCategory = searchParams.get("docCategory") || "all";
 
     const query: any = {};
     if (category && category !== "all") query.category = category;
@@ -30,19 +36,59 @@ export async function GET(req: Request) {
       ];
     }
 
-    const packages = await Package.find(query).sort({ createdAt: -1 });
+    const packages = await Package.find(query).sort({ createdAt: -1 }).lean();
+
+    // Fetch active package documents to attach brochure metadata
+    const packageIds = packages.map((p) => p._id);
+    const allDocuments = await PackageDocument.find({
+      packageId: { $in: packageIds },
+      isActive: true,
+    }).sort({ isPrimary: -1, createdAt: -1 }).lean();
+
+    const docMap = new Map<string, any[]>();
+    for (const doc of allDocuments) {
+      const pid = doc.packageId.toString();
+      if (!docMap.has(pid)) docMap.set(pid, []);
+      docMap.get(pid)!.push(doc);
+    }
+
+    // Attach documents and apply brochure filters
+    let enrichedPackages = packages.map((pkg) => {
+      const docs = docMap.get(pkg._id.toString()) || [];
+      const primaryDoc = docs.find((d) => d.isPrimary) || docs[0] || null;
+      return {
+        ...pkg,
+        documentsCount: docs.length,
+        primaryDocument: primaryDoc,
+        documents: docs,
+      };
+    });
+
+    if (brochureFilter === "with") {
+      enrichedPackages = enrichedPackages.filter((p) => p.documentsCount > 0);
+    } else if (brochureFilter === "without") {
+      enrichedPackages = enrichedPackages.filter((p) => p.documentsCount === 0);
+    }
+
+    if (docCategory && docCategory !== "all") {
+      enrichedPackages = enrichedPackages.filter((p) =>
+        p.documents.some((d: any) => d.category === docCategory)
+      );
+    }
 
     const totalPackages = await Package.countDocuments();
     const publishedCount = await Package.countDocuments({ status: "published" });
     const draftCount = await Package.countDocuments({ status: "draft" });
+    const packagesWithBrochuresCount = (await PackageDocument.distinct("packageId", { isActive: true })).length;
 
     return NextResponse.json({
       success: true,
-      data: packages,
+      data: enrichedPackages,
       summary: {
         totalPackages,
         publishedCount,
         draftCount,
+        packagesWithBrochuresCount,
       },
     });
   } catch (error: any) {
@@ -60,6 +106,9 @@ export async function POST(req: Request) {
     if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
+
+    const permError = assertPermission(user, "packages", "create");
+    if (permError) return permError;
 
     await connectToDatabase();
     const body = await req.json();

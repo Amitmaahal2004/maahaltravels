@@ -189,11 +189,10 @@ export default function DepartmentsClient() {
                     {d.code}
                   </span>
                   <span
-                    className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase ${
-                      d.isActive
-                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                        : "bg-slate-100 text-slate-500 border border-slate-200"
-                    }`}
+                    className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase ${d.isActive
+                      ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                      : "bg-slate-100 text-slate-500 border border-slate-200"
+                      }`}
                   >
                     {d.isActive ? "Active" : "Inactive"}
                   </span>

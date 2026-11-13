@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth/guard";
+import { getCurrentUser, assertPermission } from "@/lib/auth/guard";
 import connectToDatabase from "@/lib/mongodb";
 import Lead from "@/models/Lead";
 import Customer from "@/models/Customer";
@@ -15,6 +15,9 @@ export async function PUT(
     if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
+
+    const permError = assertPermission(user, "leads", "edit");
+    if (permError) return permError;
 
     await connectToDatabase();
     const body = await req.json();
@@ -58,23 +61,13 @@ export async function PUT(
       });
     }
 
-    // Regular update
-    if (updateData.travelDate) {
-      updateData.travelDate = new Date(updateData.travelDate);
-    }
-    if (updateData.travellersCount) {
-      updateData.travellersCount = Number(updateData.travellersCount);
-    }
-    if (updateData.budget) {
-      updateData.budget = Number(updateData.budget);
-    }
-
-    const updatedLead = await Lead.findByIdAndUpdate(params.id, updateData, {
+    // Normal update
+    const updated = await Lead.findByIdAndUpdate(params.id, updateData, {
       new: true,
       runValidators: true,
     });
 
-    return NextResponse.json({ success: true, data: updatedLead });
+    return NextResponse.json({ success: true, data: updated });
   } catch (error: any) {
     console.error("PUT /api/crm/leads/[id] error:", error);
     return NextResponse.json(
@@ -93,6 +86,9 @@ export async function DELETE(
     if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
+
+    const permError = assertPermission(user, "leads", "delete");
+    if (permError) return permError;
 
     await connectToDatabase();
 

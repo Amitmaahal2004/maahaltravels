@@ -9,6 +9,7 @@ export interface IRole extends Document {
   isSystem: boolean;
   permissions: Types.ObjectId[] | IPermission[];
   defaultRecordScope: RecordScope;
+  dashboardWidgets?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -46,6 +47,10 @@ const RoleSchema = new Schema<IRole>(
       type: String,
       enum: RECORD_SCOPES,
       default: "all",
+    },
+    dashboardWidgets: {
+      type: [String],
+      default: [],
     },
   },
   {

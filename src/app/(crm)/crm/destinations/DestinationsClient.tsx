@@ -273,11 +273,10 @@ export default function DestinationsClient() {
                   <span className="text-xs font-bold text-blue-600">{d.state}, {d.country}</span>
                   <button
                     onClick={() => handleToggleStatus(d)}
-                    className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase transition border ${
-                      d.status === "published"
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                        : "bg-amber-50 text-amber-700 border-amber-200"
-                    }`}
+                    className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase transition border ${d.status === "published"
+                      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                      : "bg-amber-50 text-amber-700 border-amber-200"
+                      }`}
                   >
                     {d.status}
                   </button>

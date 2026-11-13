@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth/guard";
+import { getCurrentUser, assertPermission } from "@/lib/auth/guard";
 import connectToDatabase from "@/lib/mongodb";
 import LeaveRequest from "@/models/LeaveRequest";
 
@@ -11,6 +11,9 @@ export async function GET(req: Request) {
     if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
+
+    const permError = assertPermission(user, "leaves", "view");
+    if (permError) return permError;
 
     await connectToDatabase();
 
@@ -54,23 +57,28 @@ export async function POST(req: Request) {
     await connectToDatabase();
     const body = await req.json();
 
-    const { leaveType = "casual", startDate, endDate, totalDays = 1, reason } = body;
+    const { leaveType, startDate, endDate, reason } = body;
 
-    if (!startDate || !endDate || !reason) {
+    if (!leaveType || !startDate || !endDate || !reason) {
       return NextResponse.json(
-        { success: false, error: "Start date, end date, and reason are required" },
+        { success: false, error: "Leave type, start date, end date, and reason are required" },
         { status: 400 }
       );
     }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
     const newLeave = await LeaveRequest.create({
       userId: user.id,
       userName: user.name,
       departmentId: user.department?.id || undefined,
       leaveType,
-      startDate: new Date(startDate),
-      endDate: new Date(endDate),
-      totalDays: Number(totalDays) || 1,
+      startDate: start,
+      endDate: end,
+      totalDays,
       reason,
       status: "pending",
     });
@@ -79,7 +87,7 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.error("POST /api/crm/leaves error:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to submit leave request" },
+      { success: false, error: error.message || "Failed to apply for leave" },
       { status: 500 }
     );
   }

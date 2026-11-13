@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth/guard";
+import { getCurrentUser, assertPermission } from "@/lib/auth/guard";
 import connectToDatabase from "@/lib/mongodb";
 import Booking from "@/models/Booking";
 import Payment from "@/models/Payment";
@@ -16,6 +16,9 @@ export async function GET() {
     if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
+
+    const permError = assertPermission(user, "reports", "view");
+    if (permError) return permError;
 
     await connectToDatabase();
 
@@ -52,51 +55,66 @@ export async function GET() {
         .reduce((sum, e) => sum + e.amount, 0);
 
       monthlyFinancials.push({
-        month: mName,
+        month: `${mName} ${d.getFullYear().toString().slice(-2)}`,
         revenue: mRevenue,
         expenses: mExpenses,
         profit: mRevenue - mExpenses,
       });
     }
 
-    // Expense breakdown by category
-    const categoryTotals: Record<string, number> = {};
-    expenses.forEach((e) => {
-      const cat = e.category || "other";
-      categoryTotals[cat] = (categoryTotals[cat] || 0) + e.amount;
-    });
-
-    const expenseBreakdown = Object.keys(categoryTotals).map((cat) => ({
-      category: cat.replace("_", " ").toUpperCase(),
-      amount: categoryTotals[cat],
+    // Lead source performance
+    const sourceMap: Record<string, { count: number; converted: number }> = {};
+    for (const l of leads) {
+      const src = l.leadSource || "other";
+      if (!sourceMap[src]) sourceMap[src] = { count: 0, converted: 0 };
+      sourceMap[src].count += 1;
+      if (l.status === "converted") sourceMap[src].converted += 1;
+    }
+    const leadSources = Object.keys(sourceMap).map((k) => ({
+      source: k.toUpperCase(),
+      total: sourceMap[k].count,
+      converted: sourceMap[k].converted,
+      rate: sourceMap[k].count > 0 ? Math.round((sourceMap[k].converted / sourceMap[k].count) * 100) : 0,
     }));
 
-    // Lead stage distribution
-    const leadStages: Record<string, number> = {};
-    leads.forEach((l) => {
-      leadStages[l.status] = (leadStages[l.status] || 0) + 1;
-    });
+    // Destination / Package performance
+    const destMap: Record<string, { bookings: number; revenue: number }> = {};
+    for (const b of bookings) {
+      const d = (b as any).destination || b.packageName || "General";
+      if (!destMap[d]) destMap[d] = { bookings: 0, revenue: 0 };
+      destMap[d].bookings += 1;
+      destMap[d].revenue += b.totalAmount || 0;
+    }
+    const destinationPerformance = Object.keys(destMap)
+      .map((k) => ({
+        destination: k,
+        bookings: destMap[k].bookings,
+        revenue: destMap[k].revenue,
+      }))
+      .sort((a, b) => b.revenue - a.revenue);
 
     return NextResponse.json({
       success: true,
-      summary: {
-        totalRevenue,
-        totalExpenses,
-        netProfit,
-        marginRate,
-        totalBookings: bookings.length,
-        totalCustomers: customers.length,
-        totalLeads: leads.length,
-        totalPackages: packages.length,
+      data: {
+        summary: {
+          totalRevenue,
+          totalExpenses,
+          netProfit,
+          marginRate,
+          totalBookings: bookings.length,
+          totalLeads: leads.length,
+          totalCustomers: customers.length,
+          activePackages: packages.length,
+        },
+        monthlyFinancials,
+        leadSources,
+        destinationPerformance,
       },
-      monthlyFinancials,
-      expenseBreakdown,
-      leadStages,
     });
   } catch (error: any) {
     console.error("GET /api/crm/reports error:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to fetch analytics" },
+      { success: false, error: error.message || "Failed to generate reports" },
       { status: 500 }
     );
   }

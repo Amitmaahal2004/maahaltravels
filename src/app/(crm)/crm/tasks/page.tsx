@@ -1,11 +1,15 @@
 import React from "react";
-import { requireAuth } from "@/lib/auth/guard";
+import { checkPageAccess } from "@/lib/auth/guard";
 import TasksClient from "./TasksClient";
+import AccessDenied from "@/components/crm/AccessDenied";
 
 export const dynamic = "force-dynamic";
 
 export default async function TasksPage() {
-  await requireAuth();
+  const access = await checkPageAccess("tasks", "view");
+  if (!access.authorized) {
+    return <AccessDenied moduleName="Tasks & Projects" user={access.user} reason={access.reason} />;
+  }
 
   return <TasksClient />;
 }

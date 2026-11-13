@@ -5,6 +5,7 @@ import User from "@/models/User";
 import { SafeUser } from "@/types/auth.types";
 import { PermissionAction, RecordScope, SystemModuleId } from "@/config/permissions.config";
 import { CreateRoleInput, RoleWithPermissions, UpdateRoleInput } from "@/types/rbac.types";
+import { getDefaultWidgetsForRole } from "@/config/widgets.config";
 import { logActivity } from "./audit.service";
 
 export interface PermissionCheckResult {
@@ -36,13 +37,13 @@ export function checkUserPermission(
     return { granted: false, reason: "Authentication required." };
   }
 
-  // Super Admin bypass: has total, unrestricted access across all modules
-  if (user.role.slug === "super-admin") {
+  // Super Admin & Admin bypass: unrestricted access across all modules
+  if (user.role.slug === "super-admin" || user.role.slug === "admin") {
     return { granted: true, scope: "all" };
   }
 
   // Match module and action
-  const matched = user.permissions.find(
+  const matched = user.permissions?.find(
     (p) => p.module === module && (p.action === action || p.action === "manage")
   );
 
@@ -127,6 +128,9 @@ export async function getRolesWithPermissions(): Promise<RoleWithPermissions[]> 
       description: r.description,
       isSystem: r.isSystem,
       defaultRecordScope: r.defaultRecordScope,
+      dashboardWidgets: (r.dashboardWidgets && r.dashboardWidgets.length > 0)
+        ? r.dashboardWidgets
+        : getDefaultWidgetsForRole(r.slug),
       userCount,
       createdAt: r.createdAt.toISOString(),
       updatedAt: r.updatedAt.toISOString(),
@@ -174,6 +178,9 @@ export async function createCustomRole(
     isSystem: false,
     defaultRecordScope: input.defaultRecordScope || "assigned",
     permissions: input.permissionIds,
+    dashboardWidgets: input.dashboardWidgets && input.dashboardWidgets.length > 0
+      ? input.dashboardWidgets
+      : getDefaultWidgetsForRole(slug),
   });
 
   if (actorUser) {
@@ -217,6 +224,9 @@ export async function updateRole(
   if (input.defaultRecordScope) role.defaultRecordScope = input.defaultRecordScope;
   if (input.permissionIds) {
     role.permissions = input.permissionIds as any;
+  }
+  if (input.dashboardWidgets !== undefined) {
+    role.dashboardWidgets = input.dashboardWidgets;
   }
 
   await role.save();

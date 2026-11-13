@@ -16,6 +16,7 @@ export interface RoleWithPermissions {
   isSystem: boolean;
   defaultRecordScope: RecordScope;
   permissions: PermissionDefinition[];
+  dashboardWidgets?: string[];
   userCount?: number;
   createdAt: string;
   updatedAt: string;
@@ -27,6 +28,7 @@ export interface CreateRoleInput {
   description?: string;
   defaultRecordScope?: RecordScope;
   permissionIds: string[];
+  dashboardWidgets?: string[];
 }
 
 export interface UpdateRoleInput {
@@ -34,5 +36,6 @@ export interface UpdateRoleInput {
   description?: string;
   defaultRecordScope?: RecordScope;
   permissionIds?: string[];
+  dashboardWidgets?: string[];
 }
 

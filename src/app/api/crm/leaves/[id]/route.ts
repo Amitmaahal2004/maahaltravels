@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth/guard";
+import { getCurrentUser, assertPermission } from "@/lib/auth/guard";
 import connectToDatabase from "@/lib/mongodb";
 import LeaveRequest from "@/models/LeaveRequest";
 
@@ -13,6 +13,13 @@ export async function PUT(
     const user = await getCurrentUser();
     if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Checking leave approval or edit permission
+    const permApprove = assertPermission(user, "leaves", "approve");
+    const permEdit = assertPermission(user, "leaves", "edit");
+    if (permApprove && permEdit) {
+      return permApprove;
     }
 
     await connectToDatabase();
@@ -51,6 +58,9 @@ export async function DELETE(
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
+    const permError = assertPermission(user, "leaves", "delete");
+    if (permError) return permError;
+
     await connectToDatabase();
 
     const deleted = await LeaveRequest.findByIdAndDelete(params.id);
@@ -58,7 +68,7 @@ export async function DELETE(
       return NextResponse.json({ success: false, error: "Leave not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, message: "Leave request deleted" });
+    return NextResponse.json({ success: true, message: "Leave request deleted successfully" });
   } catch (error: any) {
     console.error("DELETE /api/crm/leaves/[id] error:", error);
     return NextResponse.json(

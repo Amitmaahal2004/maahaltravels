@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth/guard";
+import { getCurrentUser, assertPermission } from "@/lib/auth/guard";
 import connectToDatabase from "@/lib/mongodb";
 import User from "@/models/User";
 import EmployeeProfile from "@/models/EmployeeProfile";
@@ -16,6 +16,9 @@ export async function GET(req: Request) {
     if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
+
+    const permError = assertPermission(user, "employees", "view");
+    if (permError) return permError;
 
     await connectToDatabase();
 
@@ -34,7 +37,7 @@ export async function GET(req: Request) {
     }
 
     const users = await User.find(userQuery)
-      .populate("roleId", "name slug")
+      .populate("roleId", "name slug description isSystem permissions")
       .populate("departmentId", "name code isActive")
       .sort({ createdAt: -1 });
 
@@ -53,7 +56,15 @@ export async function GET(req: Request) {
         email: u.email,
         phone: u.phone || "N/A",
         status: u.status,
-        role: roleObj ? { name: roleObj.name, slug: roleObj.slug } : { name: "Employee", slug: "employee" },
+        role: roleObj
+          ? {
+              _id: roleObj._id?.toString(),
+              name: roleObj.name,
+              slug: roleObj.slug,
+              isSystem: Boolean(roleObj.isSystem),
+            }
+          : { _id: "", name: "Unassigned", slug: "unassigned", isSystem: false },
+        roleId: roleObj?._id ? roleObj._id.toString() : "",
         department: deptObj
           ? {
               _id: deptObj._id?.toString(),
@@ -73,12 +84,27 @@ export async function GET(req: Request) {
 
     const totalStaff = users.length;
     const activeStaff = users.filter((u) => u.status === "active").length;
+
+    // Fetch all active departments
     const departments = await Department.find().sort({ name: 1 });
+
+    // Fetch all active and assignable roles from MongoDB
+    const allRoles = await Role.find().sort({ isSystem: -1, name: 1 });
+    const assignableRoles = allRoles.map((r) => ({
+      _id: r._id.toString(),
+      name: r.name,
+      slug: r.slug,
+      description: r.description || "",
+      isSystem: Boolean(r.isSystem),
+      permissionsCount: Array.isArray(r.permissions) ? r.permissions.length : 0,
+      isSuperAdminRole: r.slug === "super-admin",
+    }));
 
     return NextResponse.json({
       success: true,
       data: enrichedEmployees,
       departments,
+      roles: assignableRoles,
       summary: {
         totalStaff,
         activeStaff,
@@ -100,6 +126,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
+    const permError = assertPermission(user, "employees", "create");
+    if (permError) return permError;
+
     await connectToDatabase();
     const body = await req.json();
 
@@ -115,17 +144,64 @@ export async function POST(req: Request) {
       employmentType = "full_time",
     } = body;
 
-    if (!name || !email) {
+    // Mandatory name and email
+    if (!name || !name.trim()) {
       return NextResponse.json(
-        { success: false, error: "Name and email are required" },
+        { success: false, error: "Employee full name is required." },
         { status: 400 }
       );
     }
 
-    const existing = await User.findOne({ email: email.toLowerCase() });
+    if (!email || !email.trim()) {
+      return NextResponse.json(
+        { success: false, error: "Employee email address is required." },
+        { status: 400 }
+      );
+    }
+
+    // MANDATORY ROLE SELECTION: Must select an active role from MongoDB
+    if (!roleId || typeof roleId !== "string" || !roleId.trim()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Role / Access Level is mandatory. Please select an active role for this employee.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(roleId)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid Role identifier format." },
+        { status: 400 }
+      );
+    }
+
+    const selectedRole = await Role.findById(roleId);
+    if (!selectedRole) {
+      return NextResponse.json(
+        { success: false, error: "The selected Role does not exist in the database." },
+        { status: 404 }
+      );
+    }
+
+    // Special Super Admin protection: Normal staff must not be given Super Admin accidentally
+    if (selectedRole.slug === "super-admin") {
+      if (user.role.slug !== "super-admin") {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Forbidden: Only an existing Super Administrator can assign the Super Admin role.",
+          },
+          { status: 403 }
+        );
+      }
+    }
+
+    const existing = await User.findOne({ email: email.toLowerCase().trim() });
     if (existing) {
       return NextResponse.json(
-        { success: false, error: "An employee with this email already exists" },
+        { success: false, error: "An employee with this email already exists." },
         { status: 400 }
       );
     }
@@ -143,14 +219,14 @@ export async function POST(req: Request) {
       const dept = await Department.findById(departmentId);
       if (!dept) {
         return NextResponse.json(
-          { success: false, error: "The selected Department does not exist in the database" },
+          { success: false, error: "The selected Department does not exist in the database." },
           { status: 404 }
         );
       }
 
       if (!dept.isActive) {
         return NextResponse.json(
-          { success: false, error: `Department "${dept.name}" is inactive and cannot accept new employees` },
+          { success: false, error: `Department "${dept.name}" is inactive and cannot accept new employees.` },
           { status: 400 }
         );
       }
@@ -158,19 +234,13 @@ export async function POST(req: Request) {
       verifiedDepartmentId = dept._id;
     }
 
-    let assignedRole = roleId;
-    if (!assignedRole) {
-      const defaultRole = (await Role.findOne({ slug: "tour-operator" })) || (await Role.findOne());
-      assignedRole = defaultRole?._id;
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await bcrypt.hash(password || "Password@123", 12);
     const newUser = await User.create({
-      name,
-      email: email.toLowerCase(),
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
       passwordHash: hashedPassword,
-      phone: phone || "",
-      roleId: assignedRole,
+      phone: phone?.trim() || "",
+      roleId: selectedRole._id,
       departmentId: verifiedDepartmentId,
       status: "active",
     });
@@ -181,7 +251,7 @@ export async function POST(req: Request) {
     const profile = await EmployeeProfile.create({
       userId: newUser._id,
       employeeId,
-      designation,
+      designation: designation?.trim() || selectedRole.name,
       departmentId: verifiedDepartmentId || undefined,
       joiningDate: new Date(),
       employmentType,
@@ -197,12 +267,17 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         success: true,
-        message: "Employee registered successfully",
+        message: `Employee registered successfully with ${selectedRole.name} access level.`,
         data: {
           _id: newUser._id.toString(),
           name: newUser.name,
           email: newUser.email,
           employeeId: profile.employeeId,
+          role: {
+            _id: selectedRole._id.toString(),
+            name: selectedRole.name,
+            slug: selectedRole.slug,
+          },
           departmentId: verifiedDepartmentId ? verifiedDepartmentId.toString() : "",
         },
       },

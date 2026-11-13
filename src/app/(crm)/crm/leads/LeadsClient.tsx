@@ -22,8 +22,10 @@ import {
   Sparkles,
   ArrowRight,
   TrendingUp,
+  Share2,
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import DirectShareBrochureModal from "@/components/crm/packages/DirectShareBrochureModal";
 
 interface LeadItem {
   _id: string;
@@ -57,6 +59,7 @@ export default function LeadsClient() {
   const [viewMode, setViewMode] = useState<"kanban" | "table">("kanban");
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingLead, setEditingLead] = useState<LeadItem | null>(null);
+  const [sharingLead, setSharingLead] = useState<{ name: string; phone: string } | null>(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -408,6 +411,13 @@ export default function LeadsClient() {
                         </div>
                         <div className="flex items-center gap-1">
                           <button
+                            onClick={() => setSharingLead({ name: lead.name, phone: lead.phone || lead.whatsapp || "" })}
+                            className="p-1 hover:text-emerald-600 text-slate-400 transition"
+                            title="Share Brochure on WhatsApp"
+                          >
+                            <Share2 className="h-3 w-3" />
+                          </button>
+                          <button
                             onClick={() => openEditModal(lead)}
                             className="p-1 hover:text-blue-600 text-slate-400 transition"
                             title="Edit Lead"
@@ -524,6 +534,13 @@ export default function LeadsClient() {
                     </span>
                   </td>
                   <td className="p-3.5 text-right space-x-2">
+                    <button
+                      onClick={() => setSharingLead({ name: lead.name, phone: lead.phone || lead.whatsapp || "" })}
+                      className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition"
+                      title="Share Brochure on WhatsApp"
+                    >
+                      <Share2 className="h-4 w-4" />
+                    </button>
                     {lead.status !== "converted" && (
                       <button
                         onClick={() => handleConvertToCustomer(lead._id)}
@@ -722,6 +739,16 @@ export default function LeadsClient() {
             </form>
           </div>
         </div>
+      )}
+      {/* Direct WhatsApp Share Modal */}
+      {sharingLead && (
+        <DirectShareBrochureModal
+          isOpen={Boolean(sharingLead)}
+          onClose={() => setSharingLead(null)}
+          recipientName={sharingLead.name}
+          recipientPhone={sharingLead.phone}
+          sourceType="lead"
+        />
       )}
     </div>
   );

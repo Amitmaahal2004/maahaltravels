@@ -11,6 +11,7 @@ const createRoleSchema = z.object({
   description: z.string().optional(),
   defaultRecordScope: z.enum(["all", "department", "assigned", "own"]).optional(),
   permissionIds: z.array(z.string()).default([]),
+  dashboardWidgets: z.array(z.string()).default([]),
 });
 
 export async function GET() {

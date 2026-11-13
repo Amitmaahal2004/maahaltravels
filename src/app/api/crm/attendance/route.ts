@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth/guard";
+import { getCurrentUser, assertPermission } from "@/lib/auth/guard";
 import connectToDatabase from "@/lib/mongodb";
 import Attendance from "@/models/Attendance";
 import User from "@/models/User";
@@ -12,6 +12,9 @@ export async function GET(req: Request) {
     if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
+
+    const permError = assertPermission(user, "attendance", "view");
+    if (permError) return permError;
 
     await connectToDatabase();
 
@@ -121,7 +124,10 @@ export async function POST(req: Request) {
       });
     }
 
-    // Manual Admin entry
+    // Manual Admin entry requires attendance:create permission
+    const permError = assertPermission(user, "attendance", "create");
+    if (permError) return permError;
+
     const { userId, userName, date, checkInTime, checkOutTime, status } = body;
     const manualRecord = await Attendance.create({
       userId: userId || user.id,

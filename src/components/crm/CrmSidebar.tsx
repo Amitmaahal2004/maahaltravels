@@ -39,10 +39,12 @@ export default function CrmSidebar({ user }: CrmSidebarProps) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
 
-  const isSuperAdmin = user.role.slug === "super-admin";
+  const isSuperAdmin = user.role.slug === "super-admin" || user.role.slug === "admin";
   const hasModule = (moduleId: string) => {
     if (isSuperAdmin) return true;
-    return user.permissions.some((p) => p.module === moduleId);
+    return user.permissions?.some(
+      (p) => p.module === moduleId && (p.action === "view" || p.action === "manage")
+    );
   };
 
   const navGroups = [

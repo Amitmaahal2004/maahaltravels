@@ -17,6 +17,7 @@
     "mongodb": "^7.8.0",
     "mongoose": "^9.12.1",
     "next": "14.2.24",
+    "pdf-lib": "^1.17.1",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.91.0",

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth/guard";
+import { getCurrentUser, assertPermission } from "@/lib/auth/guard";
 import connectToDatabase from "@/lib/mongodb";
 import Department from "@/models/Department";
 
@@ -14,6 +14,9 @@ export async function PUT(
     if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
+
+    const permError = assertPermission(user, "departments", "edit");
+    if (permError) return permError;
 
     await connectToDatabase();
     const body = await req.json();
@@ -46,6 +49,9 @@ export async function DELETE(
     if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
+
+    const permError = assertPermission(user, "departments", "delete");
+    if (permError) return permError;
 
     await connectToDatabase();
 

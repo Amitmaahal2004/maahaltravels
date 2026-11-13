@@ -10,6 +10,7 @@ const updateRoleSchema = z.object({
   description: z.string().optional(),
   defaultRecordScope: z.enum(["all", "department", "assigned", "own"]).optional(),
   permissionIds: z.array(z.string()).optional(),
+  dashboardWidgets: z.array(z.string()).optional(),
 });
 
 export async function PUT(

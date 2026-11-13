@@ -1,13 +1,16 @@
 import React from "react";
-import { requirePermission } from "@/lib/auth/guard";
+import { checkPageAccess } from "@/lib/auth/guard";
 import { getAllSystemPermissions, getRolesWithPermissions } from "@/services/rbac.service";
 import RolesManagementClient from "./RolesManagementClient";
+import AccessDenied from "@/components/crm/AccessDenied";
 
 export const dynamic = "force-dynamic";
 
 export default async function RolesAdminPage() {
-  // Server-side permission check: ensures only authorized users can access this page
-  await requirePermission("roles", "view");
+  const access = await checkPageAccess("roles", "view");
+  if (!access.authorized) {
+    return <AccessDenied moduleName="Roles & Permissions" user={access.user} reason={access.reason} />;
+  }
 
   const [roles, permissions] = await Promise.all([
     getRolesWithPermissions(),
@@ -28,4 +31,3 @@ export default async function RolesAdminPage() {
     />
   );
 }
-

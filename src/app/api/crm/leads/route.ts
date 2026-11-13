@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth/guard";
+import { getCurrentUser, assertPermission } from "@/lib/auth/guard";
 import connectToDatabase from "@/lib/mongodb";
 import Lead from "@/models/Lead";
 
@@ -11,6 +11,9 @@ export async function GET(req: Request) {
     if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
+
+    const permError = assertPermission(user, "leads", "view");
+    if (permError) return permError;
 
     await connectToDatabase();
 
@@ -67,6 +70,9 @@ export async function POST(req: Request) {
     if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
+
+    const permError = assertPermission(user, "leads", "create");
+    if (permError) return permError;
 
     await connectToDatabase();
     const body = await req.json();

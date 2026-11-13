@@ -207,13 +207,12 @@ export default function LeavesClient() {
                   <td className="p-3.5 text-slate-600 max-w-xs truncate">{l.reason}</td>
                   <td className="p-3.5">
                     <span
-                      className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase ${
-                        l.status === "approved"
-                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                          : l.status === "pending"
+                      className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase ${l.status === "approved"
+                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                        : l.status === "pending"
                           ? "bg-amber-50 text-amber-700 border border-amber-200"
                           : "bg-rose-50 text-rose-700 border border-rose-200"
-                      }`}
+                        }`}
                     >
                       {l.status}
                     </span>

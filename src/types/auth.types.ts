@@ -11,6 +11,7 @@ export interface SafeUser {
     slug: string;
     isSystem: boolean;
     defaultRecordScope: RecordScope;
+    dashboardWidgets?: string[];
   };
   department?: {
     id: string;
